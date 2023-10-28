@@ -21,18 +21,27 @@ def write_to_csv(big_dict: dict):
     # reorder so pinnacle is first sportsbook
     col_list = df.columns.to_list()
     col_list.remove("pinnacle")
-    col_list.insert(-2, "pinnacle")
+    col_list.insert(-1, "pinnacle")
     df = df[col_list]
-    print(df)
 
     writer = pd.ExcelWriter('data.xlsx', engine='xlsxwriter')
-    df.to_excel(writer, sheet_name="Sheet1")
+    df.to_excel(writer, sheet_name="Sheet1", index=False)
     # Get the xlsxwriter workbook and worksheet objects.
     workbook = writer.book
     worksheet = writer.sheets['Sheet1']
-    # Add a format. Light red fill with dark red text.
-    format1 = workbook.add_format(
-        {'bg_color': '#FFC7CE', 'font_color': '#9C0006'}
+
+    # Add a format.
+    red_background = workbook.add_format(
+        {'bg_color': '#FFC7CE'}
+    )
+    green_background = workbook.add_format(
+        {'bg_color': '#ADFFAD'}
+    )
+    bottom_boarder = workbook.add_format(
+        {
+            "bottom": 2,
+            "bottom_color": "#000000"
+        }
     )
     # Set the conditional format range.
     start_row = 1
@@ -45,10 +54,29 @@ def write_to_csv(big_dict: dict):
         start_row, start_col, end_row, end_col, {
             'type': 'cell',
             'criteria': '>',
-            'value': 2,
-            'format': format1
+            'value': 1.5,
+            'format': red_background
         }
     )
+
+    # write green_background for best bets for each player
+    max_df = df[col_list[1:-2]]
+    for idx, row in max_df.iterrows():
+        row_min = row.max()
+        col_index = list(row).index(row_min)
+        worksheet.write(1 + idx, 1 + col_index, row_min, green_background)
+
+        # write in boarders between matchups
+        if idx % 2 == 0:
+            for i, name in enumerate(df.columns):
+                worksheet.conditional_format(
+                    idx, i, idx, i, {
+                        "type": "cell",
+                        "criteria": "!=",
+                        "value": "3.14159",
+                        "format": bottom_boarder
+                    }
+                )
     writer._save()
 
 

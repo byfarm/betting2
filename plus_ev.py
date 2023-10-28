@@ -23,14 +23,14 @@ def calc_evs(big_dict: dict):
                 american_to_percentage(books[book]),
                 american_to_percentage(big_dict[name]["pinnacle"])
             )
-            evs.append(ev)
+            evs.append(-ev)
             ev_names.append(book)
 
         best_ev = max(evs)
         big_dict[name]["ev"] = round(100 * best_ev, 2)
 
-        if best_ev == 0:
-            big_dict[name]["ev_book"] = ""
-        else:
-            index = evs.index(best_ev)
-            big_dict[name]["ev_book"] = ev_names[index]
+        # if best_ev == 0:
+        #     big_dict[name]["ev_book"] = ""
+        # else:
+        #     index = evs.index(best_ev)
+        #     big_dict[name]["ev_book"] = ev_names[index]
