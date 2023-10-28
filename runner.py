@@ -21,7 +21,6 @@ async def main():
         mgm=mgm,
     )
     calc_evs(big_dict)
-    debug(big_dict)
     write_to_csv(big_dict)
 
 

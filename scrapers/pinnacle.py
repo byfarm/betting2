@@ -78,8 +78,11 @@ def pinnacle_parse(bets_response: dict, matchups_response: dict):
     all_matchups: set = []
     for matchup in matchups:
         match = PinnacleMatchup(data=matchup)
-        s1 = Betline(match.home, all_bets[match.id].bet1)
-        s2 = Betline(match.away, all_bets[match.id].bet2)
+        try:
+            s1 = Betline(match.home, all_bets[match.id].bet1)
+            s2 = Betline(match.away, all_bets[match.id].bet2)
+        except KeyError:
+            continue
         s1.matchup, s2.matchup = s2, s1
         all_matchups.append(s1)
         all_matchups.append(s2)
