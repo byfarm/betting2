@@ -15,9 +15,41 @@ def write_to_csv(big_dict: dict):
                 put_in[site] = []
 
             put_in[site].append(odd)
-    debug(put_in)
+
     df = pd.DataFrame(put_in)
-    df.to_excel("data.xlsx")
+
+    # reorder so pinnacle is first sportsbook
+    col_list = df.columns.to_list()
+    col_list.remove("pinnacle")
+    col_list.insert(-2, "pinnacle")
+    df = df[col_list]
+    print(df)
+
+    writer = pd.ExcelWriter('data.xlsx', engine='xlsxwriter')
+    df.to_excel(writer, sheet_name="Sheet1")
+    # Get the xlsxwriter workbook and worksheet objects.
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    # Add a format. Light red fill with dark red text.
+    format1 = workbook.add_format(
+        {'bg_color': '#FFC7CE', 'font_color': '#9C0006'}
+    )
+    # Set the conditional format range.
+    start_row = 1
+    start_col = len(df.columns) - 1
+    end_row = len(df)
+    end_col = start_col
+
+    # Apply a conditional format to the cell range.
+    worksheet.conditional_format(
+        start_row, start_col, end_row, end_col, {
+            'type': 'cell',
+            'criteria': '>',
+            'value': 2,
+            'format': format1
+        }
+    )
+    writer._save()
 
 
 def combine_data(**kwargs):

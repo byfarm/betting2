@@ -1,6 +1,8 @@
+from numba import jit
 BET = 100
 
 
+@jit(nopython=True)
 def american_to_percentage(american_odd: int) -> float:
 
     if american_odd > 0:

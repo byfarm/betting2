@@ -16,7 +16,6 @@ async def main():
     draftkings = await scrape_draftkings()
     mgm = await scrape_mgm()
     betriver = await scrape_betriver()
-    debug(mgm)
     big_dict = combine_data(
         fanduel=fanduel,
         pinnacle=pinnacle,
