@@ -16,7 +16,7 @@ def write_to_csv(big_dict: dict):
 
             put_in[site].append(odd)
     df = pd.DataFrame(put_in)
-    df.to_csv("data.csv")
+    df.to_excel("data.xlsx")
 
 
 def combine_data(**kwargs):
