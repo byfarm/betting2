@@ -15,6 +15,7 @@ def write_to_csv(big_dict: dict):
                 put_in[site] = []
 
             put_in[site].append(odd)
+    debug(put_in)
     df = pd.DataFrame(put_in)
     df.to_excel("data.xlsx")
 
