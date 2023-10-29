@@ -1,5 +1,4 @@
 from numba import jit
-BET = 100
 
 
 @jit(nopython=True)
@@ -15,8 +14,13 @@ def american_to_percentage(american_odd: int) -> float:
     return percentage
 
 
-def expected_value(percentage: float):
-    return BET * percentage
+@jit(nopython=True)
+def decimal_to_american(decimal_odd: float) -> int:
+
+    if decimal_odd >= 2:
+        return round((decimal_odd - 1) * 100)
+    else:
+        return round(-100 / (decimal_odd - 1))
 
 
 if __name__ == "__main__":

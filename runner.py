@@ -5,6 +5,7 @@ from scrapers.draftkings import scrape_draftkings
 from scrapers.betrivers import scrape_betriver
 from scrapers.ceasers import scrape_ceasers
 from scrapers.mgm import scrape_mgm
+from scrapers.pointsbet import scrape_pointsbet
 from write import combine_data, write_to_csv
 import asyncio
 from plus_ev import calc_evs
@@ -18,6 +19,7 @@ async def main():
     mgm = await scrape_mgm()
     betriver = await scrape_betriver()
     ceasers = await scrape_ceasers()
+    pointsbet = await scrape_pointsbet()
     big_dict = combine_data(
         fanduel=fanduel,
         pinnacle=pinnacle,
@@ -25,6 +27,7 @@ async def main():
         mgm=mgm,
         betriver=betriver,
         ceasers=ceasers,
+        pointsbet=pointsbet
     )
     calc_evs(big_dict)
     write_to_csv(big_dict)
