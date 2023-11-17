@@ -1,4 +1,4 @@
-import requests
+from scrapers.request_client import client
 import json
 from devtools import debug
 import asyncio
@@ -11,12 +11,12 @@ async def pointsbet_request():
     headers: dict = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
     }
-    response = requests.request("GET", url, headers=headers)
+    response = await client.request("GET", url, headers=headers)
     response = response.json()
     return response
 
 
-def parse_pointsbet(data: dict):
+async def parse_pointsbet(data: dict):
     events = data.get("events", [])
     all_bets: list[Betline] = []
     for event in events:
@@ -36,7 +36,7 @@ def parse_pointsbet(data: dict):
 
 async def scrape_pointsbet():
     response = await pointsbet_request()
-    bets = parse_pointsbet(response)
+    bets = await parse_pointsbet(response)
     return bets
 
 

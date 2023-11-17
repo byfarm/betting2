@@ -1,4 +1,4 @@
-import requests
+from scrapers.request_client import client
 import json
 import asyncio
 from devtools import debug
@@ -11,7 +11,11 @@ async def request_mgm_ids():
         "Sec-Ch-Ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
     }
-    event_id_response = requests.request("GET", url, headers=headers)
+    event_id_response = await client.request("GET", url, headers=headers)
+    if event_id_response.status_code != 200:
+        raise Exception(
+            f"status code {event_id_response.satatus_code} in request"
+        )
 
     event_id_response = event_id_response.json()
 
@@ -24,13 +28,15 @@ async def request_mgm_ids():
     return ids
 
 
-def request_mgm_odds(id: str):
+async def request_mgm_odds(id: str):
     url = f"https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=SportLobby&sportId=45&competitionId={id}&widgetId=/mobilesports-v1.0/layout/layout_us/modules/ufc/mmalobby&shouldIncludePayload=true"
     headers = {
         "Sec-Ch-Ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
     }
-    bet_response = requests.request("GET", url, headers=headers)
+    bet_response = await client.request("GET", url, headers=headers)
+    if bet_response.status_code != 200:
+        raise Exception(f"status code {bet_response.satatus_code} in request")
 
     bet_response = bet_response.json()
     return bet_response
@@ -70,7 +76,8 @@ def parse_mgm(api_response: dict):
 
 async def scrape_mgm():
     ids = await request_mgm_ids()
-    bet_responses = map(request_mgm_odds, ids)
+    bet_responses = [request_mgm_odds(id) for id in ids]
+    bet_responses = await asyncio.gather(*bet_responses)
 
     all_bets = []
     for response in bet_responses:

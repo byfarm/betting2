@@ -1,8 +1,9 @@
 import json
 from devtools import debug
-import requests
+from scrapers.request_client import client
 from datetime import datetime
 from write import write_to_csv, Betline
+from name_comparitor import add_names
 
 
 class PinnacleMatchup:
@@ -60,21 +61,42 @@ async def pinnacle_request():
     headers = {"X-Api-Key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R"}
 
     # get the betting response
-    bets_response = requests.request("GET", bets_url, headers=headers)
-    matchups_response = requests.request("GET", matchups_url, headers=headers)
+    bets_response = await client.request("GET", bets_url, headers=headers)
+
+    if bets_response.status_code != 200:
+        raise Exception(
+            f"status code {bets_response.satatus_code} in request"
+        )
+
+    matchups_response = await client.request(
+        "GET", matchups_url, headers=headers
+    )
+
+    if matchups_response.status_code != 200:
+        raise Exception(
+            f"status code {matchups_response.satatus_code} in request"
+        )
+
     return bets_response, matchups_response
 
 
-def pinnacle_parse(bets_response: dict, matchups_response: dict):
+async def pinnacle_parse(bets_response: dict, matchups_response: dict):
+    """
+    parse through both responses and match up the bets witht the correct player
+    """
     bets: dict = bets_response.json()
     matchups: dict = matchups_response.json()
 
+    # putht the odds into an id dict
     all_bets: dict = {}
     for bet in bets:
+        if not bet.get("type", "") == "moneyline":
+            continue
         id = bet.get("matchupId", "")
         moneyline = Moneyline(bet)
         all_bets[id] = moneyline
 
+    # find the matchups and pair them with their ids
     all_matchups: set = []
     for matchup in matchups:
         match = PinnacleMatchup(data=matchup)
@@ -86,16 +108,20 @@ def pinnacle_parse(bets_response: dict, matchups_response: dict):
         s1.matchup, s2.matchup = s2, s1
         all_matchups.append(s1)
         all_matchups.append(s2)
+
+    # add all the names to the names database
+    names = [match.name for match in all_matchups]
+    add_names(names)
+
     return all_matchups
 
 
 async def scrape_pinnacle():
     bets_response, matchups_response = await pinnacle_request()
-    all_matchups = pinnacle_parse(bets_response, matchups_response)
+    all_matchups = await pinnacle_parse(bets_response, matchups_response)
     return all_matchups
 
 
 if __name__ == "__main__":
-    bets_response, matchups_response = pinnacle_request()
-    all_matchups = pinnacle_parse(bets_response, matchups_response)
-    write_to_csv(all_matchups)
+    import asyncio
+    asyncio.run(scrape_pinnacle())

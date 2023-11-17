@@ -1,4 +1,4 @@
-import requests
+from scrapers.request_client import client
 import json
 import asyncio
 from devtools import debug
@@ -7,13 +7,13 @@ from write import Betline
 
 async def draftkings_request():
     url = "https://sportsbook-us-tl.draftkings.com/sites/US-WATL-SB/api/v5/eventgroups/9034?format=json"
-    response = requests.request("GET", url)
+    response = await client.request("GET", url)
     json_data = response.json()
 
     return json_data
 
 
-def parse_draftkings(json_data: dict):
+async def parse_draftkings(json_data: dict):
     bet_offers: list = (
         json_data.get("eventGroup", {})
         .get("offerCategories", [])[0]
@@ -40,7 +40,7 @@ def parse_draftkings(json_data: dict):
 
 async def scrape_draftkings():
     data = await draftkings_request()
-    matchups = parse_draftkings(data)
+    matchups = await parse_draftkings(data)
     return matchups
 
 

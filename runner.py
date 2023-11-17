@@ -13,21 +13,23 @@ from devtools import debug
 
 
 async def main():
-    fanduel = await scrape_fanduel()
-    pinnacle = await scrape_pinnacle()
-    draftkings = await scrape_draftkings()
-    mgm = await scrape_mgm()
-    betriver = await scrape_betriver()
-    ceasers = await scrape_ceasers()
-    pointsbet = await scrape_pointsbet()
+    fanduel = asyncio.create_task(scrape_fanduel())
+    pinnacle = asyncio.create_task(scrape_pinnacle())
+    draftkings = asyncio.create_task(scrape_draftkings())
+    mgm = asyncio.create_task(scrape_mgm())
+    betriver = asyncio.create_task(scrape_betriver())
+    ceasers = asyncio.create_task(scrape_ceasers())
+    pointsbet = asyncio.create_task(scrape_pointsbet())
+    await fanduel, await pinnacle, await draftkings, await mgm, \
+        await betriver, await ceasers, await pointsbet
     big_dict = combine_data(
-        fanduel=fanduel,
-        pinnacle=pinnacle,
-        draftkings=draftkings,
-        mgm=mgm,
-        betriver=betriver,
-        ceasers=ceasers,
-        pointsbet=pointsbet
+        fanduel=fanduel.result(),
+        pinnacle=pinnacle.result(),
+        draftkings=draftkings.result(),
+        mgm=mgm.result(),
+        betriver=betriver.result(),
+        ceasers=ceasers.result(),
+        pointsbet=pointsbet.result()
     )
     calc_evs(big_dict)
     write_to_csv(big_dict)

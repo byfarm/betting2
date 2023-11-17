@@ -1,6 +1,7 @@
 import pandas as pd
 from odds_calc import american_to_percentage
 from devtools import debug
+from name_comparitor import check_single_name
 
 
 def write_to_csv(big_dict: dict):
@@ -84,10 +85,20 @@ def combine_data(**kwargs):
     big_dict = {}
     for key, value in kwargs.items():
         for val in value:
-            if not big_dict.get(val.name, None):
-                big_dict[val.name] = {}
-            big_dict[val.name][key] = val.odds
-            big_dict[val.name]["opponent"] = val.matchup
+            # get the name stored in the database
+            name = check_single_name(val.name)
+            opp_name = check_single_name(val.matchup.name)
+
+            # if the matchup not in, skip
+            if not name or not opp_name:
+                continue
+
+            name = name.title()
+            if not big_dict.get(name, None):
+                big_dict[name] = {}
+
+            big_dict[name][key] = val.odds
+            big_dict[name]["opponent"] = val.matchup
 
     # fileter out non-matching names
     bad_ones = set()
