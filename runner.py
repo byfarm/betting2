@@ -13,15 +13,15 @@ from devtools import debug
 
 
 async def main():
-    fanduel = asyncio.create_task(scrape_fanduel())
-    pinnacle = asyncio.create_task(scrape_pinnacle())
-    draftkings = asyncio.create_task(scrape_draftkings())
-    mgm = asyncio.create_task(scrape_mgm())
-    betriver = asyncio.create_task(scrape_betriver())
-    ceasers = asyncio.create_task(scrape_ceasers())
-    pointsbet = asyncio.create_task(scrape_pointsbet())
-    await fanduel, await pinnacle, await draftkings, await mgm, \
-        await betriver, await ceasers, await pointsbet
+    async with asyncio.TaskGroup() as tg:
+        fanduel = tg.create_task(scrape_fanduel())
+        pinnacle = tg.create_task(scrape_pinnacle())
+        draftkings = tg.create_task(scrape_draftkings())
+        mgm = tg.create_task(scrape_mgm())
+        betriver = tg.create_task(scrape_betriver())
+        ceasers = tg.create_task(scrape_ceasers())
+        pointsbet = tg.create_task(scrape_pointsbet())
+
     big_dict = combine_data(
         fanduel=fanduel.result(),
         pinnacle=pinnacle.result(),
