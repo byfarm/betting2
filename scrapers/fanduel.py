@@ -1,6 +1,6 @@
 import json
 from devtools import debug
-import requests
+from scrapers.request_client import client
 from write import Betline
 from write import write_to_csv
 
@@ -29,7 +29,12 @@ class Matchup:
 async def fanduel_request():
     url = "https://sbapi.nj.sportsbook.fanduel.com/api/content-managed-page?page=SPORT&eventTypeId=26420387&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FNew_York"
 
-    response = requests.request("Get", url)
+    headers: dict = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+    }
+    response = await client.request("Get", url, headers=headers)
+    if response.status_code != 200:
+        raise Exception(f"status code {response.status_code} in request")
 
     data: dict = response.json()
     return data
@@ -67,6 +72,6 @@ async def scrape_fanduel():
 
 
 if __name__ == "__main__":
-    data = fanduel_request()
+    import asyncio
+    data = asyncio.run(fanduel_request())
     all_matchups = parse_fanduel(data)
-    write_to_csv(all_matchups)

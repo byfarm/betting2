@@ -1,4 +1,4 @@
-import requests
+from scrapers.request_client import client
 import json
 import asyncio
 from devtools import debug
@@ -10,7 +10,7 @@ async def request_ceasers():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
     }
-    bets_response = requests.request("GET", url, headers=headers)
+    bets_response = await client.request("GET", url, headers=headers)
     return bets_response.json()
 
 
