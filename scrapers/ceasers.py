@@ -22,6 +22,8 @@ def parse_ceasers(response: dict):
         events = competition.get("events", [])
 
         for event in events:
+            if len(event.get("markets", [])) < 1:
+                continue
             selections = event.get("markets", [])[0].get("selections", [])
 
             pair = []
@@ -47,5 +49,6 @@ async def scrape_ceasers(url: str = None):
 
 if __name__ == "__main__":
     url = "https://api.americanwagering.com/regions/us/locations/wa-ms/brands/czr/sb/v3/sports/americanfootball/events/schedule"
+    url = None
     res = asyncio.run(scrape_ceasers(url))
     debug(res)

@@ -5,9 +5,7 @@ from devtools import debug
 from write import Betline
 
 
-async def request_mgm_ids(url: str = None):
-    if not url:
-        url = "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=SportLobby&sportId=45&widgetId=/mobilesports-v1.0/layout/layout_us/modules/ufc/mmalobby&shouldIncludePayload=true"
+async def request_mgm_ids(url: str):
     headers = {
         "Sec-Ch-Ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
@@ -29,8 +27,8 @@ async def request_mgm_ids(url: str = None):
     return ids
 
 
-async def request_mgm_odds(id: str):
-    url = f"https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=SportLobby&sportId=45&competitionId={id}&widgetId=/mobilesports-v1.0/layout/layout_us/modules/ufc/mmalobby&shouldIncludePayload=true"
+async def request_mgm_odds(id: str, url: str):
+    url += f"&competitionId={id}"
     headers = {
         "Sec-Ch-Ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
@@ -76,18 +74,24 @@ def parse_mgm(api_response: dict):
 
 
 async def scrape_mgm(url: str = None):
-    ids = await request_mgm_ids(url)
-    bet_responses = [request_mgm_odds(id) for id in ids]
-    bet_responses = await asyncio.gather(*bet_responses)
-
-    all_bets = []
-    for response in bet_responses:
-        bets = parse_mgm(response)
-        all_bets += bets
+    if not url:
+        url = "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=SportLobby&sportId=45&widgetId=/mobilesports-v1.0/layout/layout_us/modules/ufc/mmalobby&shouldIncludePayload=true"
+    if "sportId=45" in url:
+        ids = await request_mgm_ids(url)
+        bet_responses = [request_mgm_odds(id, url) for id in ids]
+        bet_responses = await asyncio.gather(*bet_responses)
+        all_bets = []
+        for response in bet_responses:
+            bets = parse_mgm(response)
+            all_bets += bets
+    else:
+        bet_response = await request_mgm_odds(id=11, url=url)
+        all_bets = parse_mgm(bet_response)
 
     return all_bets
 
 if __name__ == "__main__":
-    url = "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Medium&page=SportLobby&sportId=11&widgetId=/mobilesports-v1.0/layout/layout_standards/modules/sportgrid&shouldIncludePayload=true"
+    url = "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=CompetitionLobby&sportId=11&regionId=9&competitionId=35&compoundCompetitionId=1:35&widgetId=/mobilesports-v1.0/layout/layout_us/modules/competition/defaultcontainer-eventsonly-redesign_no_header&shouldIncludePayload=true"
+    # url = None
     res = asyncio.run(scrape_mgm(url))
     debug(res)
