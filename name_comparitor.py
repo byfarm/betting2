@@ -1,8 +1,11 @@
 names_db: list[list[str]] = []
 
 
-def check_names(names_to_check: list[str]):
+def check_names(names_to_check: list[str], name_index: int = None):
     """checks a list of names to see if they are in the db"""
+    if not name_index:
+        name_index = 1
+
     matches = []
     for name in names_to_check:
         # switch names to lowercase
@@ -15,7 +18,7 @@ def check_names(names_to_check: list[str]):
                 if single_name in good_name:
                     name_match += 1
 
-            if name_match > 1:
+            if name_match > name_index:
                 matches.append(True)
                 if len(name_lis) > len(good_name):
                     names_db[idx] = name_lis
@@ -26,9 +29,11 @@ def check_names(names_to_check: list[str]):
     return matches
 
 
-def check_single_name(name: str):
+def check_single_name(name: str, name_index: int = None):
     """Checks to see if a single name is in the names db"""
     name = name.lower()
+    if not name_index:
+        name_index = 1
 
     name_lis: list[str] = name.split(" ")
     for idx, good_name in enumerate(names_db):
@@ -37,7 +42,7 @@ def check_single_name(name: str):
             if single_name in good_name:
                 name_match += 1
 
-        if name_match > 1:
+        if name_match > name_index:
             # if len(name_lis) > len(good_name):
             #     names_db[idx] = name_lis
             return " ".join(names_db[idx])

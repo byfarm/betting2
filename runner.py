@@ -23,7 +23,7 @@ async def main(sport: str = None):
             results[key] = tg.create_task(scraping_functions[key](urls[key]))
 
     results = {key: result.result() for key, result in results.items()}
-    big_dict = combine_data(**results)
+    big_dict = combine_data(sport, **results)
     calc_evs(big_dict)
     write_to_csv(big_dict)
 

@@ -25,12 +25,18 @@ url_db = {
 
     "TEN": {
         "Ceasers": None,
+
         "Draftkings": None,
+
         "Betrivers": None,
-        "MGM": None,
-        "Fanduel": None,
-        "Pinnacle": None,
-        "Pointsbet": None,
+
+        # "MGM": None,
+
+        "Fanduel": "https://sbapi.nj.sportsbook.fanduel.com/api/content-managed-page?page=SPORT&eventTypeId=2&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FNew_York",
+
+        "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/sports/33/markets/straight?primaryOnly=false&withSpecials=false",
+
+        "Pointsbet": "https://api.nj.pointsbet.com/api/v2/sports/tennis/events/nextup?limit=50""",
     },
 }
 
