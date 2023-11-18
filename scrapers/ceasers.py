@@ -31,6 +31,9 @@ def parse_ceasers(response: dict):
                 bet = Betline(name, odd)
                 pair.append(bet)
 
+            if len(pair) == 0:
+                continue
+
             pair[0].matchup, pair[1].matchup = pair[1], pair[0]
             all_bets += pair
     return all_bets
@@ -43,4 +46,6 @@ async def scrape_ceasers(url: str = None):
 
 
 if __name__ == "__main__":
-    asyncio.run(scrape_ceasers())
+    url = "https://api.americanwagering.com/regions/us/locations/wa-ms/brands/czr/sb/v3/sports/americanfootball/events/schedule"
+    res = asyncio.run(scrape_ceasers(url))
+    debug(res)

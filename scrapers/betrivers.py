@@ -57,4 +57,6 @@ async def scrape_betriver(url: str = None):
 
 
 if __name__ == "__main__":
-    asyncio.run(scrape_betriver())
+    url = "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=202310181910&cageCode=268&type=live&type=prematch&groupId=1000093656&pageNr=1&pageSize=10&offset=0"
+    res = asyncio.run(scrape_betriver(url))
+    debug(res)

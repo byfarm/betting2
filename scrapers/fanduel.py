@@ -75,6 +75,7 @@ async def scrape_fanduel(url: str = None):
 
 
 if __name__ == "__main__":
+    url = "https://sbapi.co.sportsbook.fanduel.com/api/content-managed-page?page=CUSTOM&customPageId=nfl&pbHorizontal=false&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FDenver"
     import asyncio
-    data = asyncio.run(scrape_fanduel())
+    data = asyncio.run(scrape_fanduel(url))
     debug(data)

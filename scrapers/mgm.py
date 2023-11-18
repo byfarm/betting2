@@ -88,4 +88,6 @@ async def scrape_mgm(url: str = None):
     return all_bets
 
 if __name__ == "__main__":
-    asyncio.run(scrape_mgm())
+    url = "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Medium&page=SportLobby&sportId=11&widgetId=/mobilesports-v1.0/layout/layout_standards/modules/sportgrid&shouldIncludePayload=true"
+    res = asyncio.run(scrape_mgm(url))
+    debug(res)
