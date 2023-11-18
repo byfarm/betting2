@@ -68,7 +68,7 @@ async def pinnacle_request(url: str = None):
         )
 
     splitted = "/".join(url.split("?")[0].split("/")[:-2])
-    url = splitted + "/matchups?withSpecials=false&brandId=0"
+    url = splitted + "/matchups?brandId=0"
 
     matchups_response = await client.request(
         "GET", url, headers=headers
@@ -94,6 +94,10 @@ async def pinnacle_parse(bets_response: dict, matchups_response: dict):
     for bet in bets:
         if not bet.get("type", "") == "moneyline":
             continue
+
+        if len(bet.get("prices", [])) < 2:
+            continue
+
         id = bet.get("matchupId", "")
         moneyline = Moneyline(bet)
         all_bets[id] = moneyline
@@ -101,6 +105,8 @@ async def pinnacle_parse(bets_response: dict, matchups_response: dict):
     # find the matchups and pair them with their ids
     all_matchups: set = []
     for matchup in matchups:
+        if matchup.get("participants")[0].get("alignment", "") == "neutral":
+            continue
         match = PinnacleMatchup(data=matchup)
         try:
             s1 = Betline(match.home, all_bets[match.id].bet1)
@@ -125,5 +131,7 @@ async def scrape_pinnacle(url: str = None):
 
 
 if __name__ == "__main__":
+    url = "https://guest.api.arcadia.pinnacle.com/0.1/leagues/889/markets/straight"
     import asyncio
-    asyncio.run(scrape_pinnacle())
+    res = asyncio.run(scrape_pinnacle(url))
+    debug(res)

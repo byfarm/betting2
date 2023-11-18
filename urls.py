@@ -29,7 +29,9 @@ url_db = {
         "Betrivers": None,
         "MGM": None,
         "Fanduel": None,
-        "Pinnacle": None,
+
+        "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/889/markets/straight",
+
         "Pointsbet": None,
     },
 

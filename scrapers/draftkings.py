@@ -46,4 +46,5 @@ async def scrape_draftkings(url: str = None):
 
 
 if __name__ == "__main__":
-    asyncio.run(scrape_draftkings())
+    res = asyncio.run(scrape_draftkings())
+    debug(res)
