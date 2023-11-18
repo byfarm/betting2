@@ -46,5 +46,7 @@ async def scrape_draftkings(url: str = None):
 
 
 if __name__ == "__main__":
-    res = asyncio.run(scrape_draftkings())
+    url = "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/88808?format=json"
+    # url = None
+    res = asyncio.run(scrape_draftkings(url))
     debug(res)

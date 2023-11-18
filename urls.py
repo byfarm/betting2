@@ -25,7 +25,9 @@ url_db = {
 
     "NFL": {
         "Ceasers": None,
-        "Draftkings": None,
+
+        "Draftkings": "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/88808?format=json",
+
         "Betrivers": None,
         "MGM": None,
         "Fanduel": None,
