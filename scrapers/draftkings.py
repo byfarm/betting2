@@ -5,8 +5,9 @@ from devtools import debug
 from write import Betline
 
 
-async def draftkings_request():
-    url = "https://sportsbook-us-tl.draftkings.com/sites/US-WATL-SB/api/v5/eventgroups/9034?format=json"
+async def draftkings_request(url: str = None):
+    if not url:
+        url = "https://sportsbook-us-tl.draftkings.com/sites/US-WATL-SB/api/v5/eventgroups/9034?format=json"
     response = await client.request("GET", url)
     json_data = response.json()
 
@@ -38,8 +39,8 @@ async def parse_draftkings(json_data: dict):
     return all_bets
 
 
-async def scrape_draftkings():
-    data = await draftkings_request()
+async def scrape_draftkings(url: str = None):
+    data = await draftkings_request(url)
     matchups = await parse_draftkings(data)
     return matchups
 

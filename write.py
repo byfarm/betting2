@@ -21,8 +21,8 @@ def write_to_csv(big_dict: dict):
 
     # reorder so pinnacle is first sportsbook
     col_list = df.columns.to_list()
-    col_list.remove("pinnacle")
-    col_list.insert(-1, "pinnacle")
+    col_list.remove("Pinnacle")
+    col_list.insert(-1, "Pinnacle")
     df = df[col_list]
 
     writer = pd.ExcelWriter('data.xlsx', engine='xlsxwriter')

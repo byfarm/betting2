@@ -26,8 +26,9 @@ class Matchup:
         self.home, self.away = players
 
 
-async def fanduel_request():
-    url = "https://sbapi.nj.sportsbook.fanduel.com/api/content-managed-page?page=SPORT&eventTypeId=26420387&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FNew_York"
+async def fanduel_request(url: str = None):
+    if not url:
+        url = "https://sbapi.nj.sportsbook.fanduel.com/api/content-managed-page?page=SPORT&eventTypeId=26420387&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FNew_York"
 
     headers: dict = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
@@ -45,6 +46,8 @@ def parse_fanduel(data: dict):
 
     all_matchups = []
     for market in markets.values():
+        if market.get("marketName", "") != "Moneyline":
+            continue
 
         pair = []
         for runner in market.get("runners", []):
@@ -65,13 +68,13 @@ def parse_fanduel(data: dict):
     return all_matchups
 
 
-async def scrape_fanduel():
-    data = await fanduel_request()
+async def scrape_fanduel(url: str = None):
+    data = await fanduel_request(url)
     all_matchups = parse_fanduel(data)
     return all_matchups
 
 
 if __name__ == "__main__":
     import asyncio
-    data = asyncio.run(fanduel_request())
-    all_matchups = parse_fanduel(data)
+    data = asyncio.run(scrape_fanduel())
+    debug(data)

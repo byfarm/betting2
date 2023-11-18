@@ -5,8 +5,9 @@ import asyncio
 from write import Betline
 
 
-async def request_betriver(num_requests: int = None):
-    url = "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=20239281120&cageCode=268&type=prematch&groupId=1000093883&pageNr=1&pageSize=20&offset=0"
+async def request_betriver(url: str = None):
+    if not url:
+        url = "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=20239281120&cageCode=268&type=prematch&groupId=1000093883&pageNr=1&pageSize=20&offset=0"
     bets_response = await client.request("GET", url)
     bets_response = bets_response.json()
 
@@ -15,7 +16,9 @@ async def request_betriver(num_requests: int = None):
     responses: list[dict] = [bets_response]
 
     for i in range(2, total_pages + 1):
-        url = f"https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=20239281120&cageCode=268&type=prematch&groupId=1000093883&pageNr={i}&pageSize=20&offset=0"
+        queries = url.split("&")
+        queries[-3] = f"pageNr={i}"
+        url = "&".join(queries)
 
         bets_response = await client.request("GET", url)
         bets_response = bets_response.json()
@@ -47,8 +50,8 @@ async def parse_responses(data: list[dict]):
     return all_bets
 
 
-async def scrape_betriver():
-    bets_data = await request_betriver()
+async def scrape_betriver(url: str = None):
+    bets_data = await request_betriver(url)
     all_bets = await parse_responses(bets_data)
     return all_bets
 

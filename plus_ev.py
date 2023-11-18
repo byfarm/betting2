@@ -17,11 +17,11 @@ def calc_evs(big_dict: dict):
         ev_names: list = []
         evs: list = []
         for book in books:
-            if book == "opponent" or book == "pinnacle":
+            if book == "opponent" or book == "Pinnacle":
                 continue
             ev: float = expected_value(
                 american_to_percentage(books[book]),
-                american_to_percentage(big_dict[name]["pinnacle"])
+                american_to_percentage(big_dict[name]["Pinnacle"])
             )
             evs.append(-ev)
             ev_names.append(book)
