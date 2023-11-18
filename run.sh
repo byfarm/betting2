@@ -1,4 +1,3 @@
-#!/bin/bash
-
-python3 runner.py
+export PYTHONPATH='.'
+python3 /home/bucks/coding/python/betting/runner.py
 wslview data.xlsx

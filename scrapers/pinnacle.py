@@ -2,7 +2,7 @@ import json
 from devtools import debug
 from scrapers.request_client import client
 from datetime import datetime
-from write import write_to_csv, Betline
+from write import Betline
 from name_comparitor import add_names
 
 
@@ -52,24 +52,26 @@ class Moneyline:
             self.bet2 = participant2.get("price", 0)
 
 
-async def pinnacle_request():
-    # set urls and api key
-    bets_url = "https://guest.api.arcadia.pinnacle.com/0.1/sports/22/markets/straight?primaryOnly=false&withSpecials=false"
-
-    matchups_url = "https://guest.api.arcadia.pinnacle.com/0.1/sports/22/matchups?withSpecials=false&brandId=0"
-
+async def pinnacle_request(url: str = None):
     headers = {"X-Api-Key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R"}
 
+    # set urls and api key
+    if not url:
+        url = "https://guest.api.arcadia.pinnacle.com/0.1/sports/22/markets/straight?primaryOnly=false&withSpecials=false"
+
     # get the betting response
-    bets_response = await client.request("GET", bets_url, headers=headers)
+    bets_response = await client.request("GET", url, headers=headers)
 
     if bets_response.status_code != 200:
         raise Exception(
             f"status code {bets_response.satatus_code} in request"
         )
 
+    splitted = "/".join(url.split("?")[0].split("/")[:-2])
+    url = splitted + "/matchups?withSpecials=false&brandId=0"
+
     matchups_response = await client.request(
-        "GET", matchups_url, headers=headers
+        "GET", url, headers=headers
     )
 
     if matchups_response.status_code != 200:
@@ -116,8 +118,8 @@ async def pinnacle_parse(bets_response: dict, matchups_response: dict):
     return all_matchups
 
 
-async def scrape_pinnacle():
-    bets_response, matchups_response = await pinnacle_request()
+async def scrape_pinnacle(url: str = None):
+    bets_response, matchups_response = await pinnacle_request(url)
     all_matchups = await pinnacle_parse(bets_response, matchups_response)
     return all_matchups
 

@@ -5,8 +5,9 @@ from devtools import debug
 from write import Betline
 
 
-async def request_ceasers():
-    url = "https://api.americanwagering.com/regions/us/locations/wa-ms/brands/czr/sb/v3/sports/ufcmma/events/schedule"
+async def request_ceasers(url: str = None):
+    if not url:
+        url = "https://api.americanwagering.com/regions/us/locations/wa-ms/brands/czr/sb/v3/sports/ufcmma/events/schedule"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
     }
@@ -35,8 +36,8 @@ def parse_ceasers(response: dict):
     return all_bets
 
 
-async def scrape_ceasers():
-    response = await request_ceasers()
+async def scrape_ceasers(url: str = None):
+    response = await request_ceasers(url)
     bets = parse_ceasers(response)
     return bets
 

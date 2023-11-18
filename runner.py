@@ -10,27 +10,20 @@ from write import combine_data, write_to_csv
 import asyncio
 from plus_ev import calc_evs
 from devtools import debug
+from urls import url_db, scraping_functions
 
 
-async def main():
+async def main(sport: str = None):
+    if not sport:
+        sport = "UFC"
+    urls = url_db[sport]
+    results = {}
     async with asyncio.TaskGroup() as tg:
-        fanduel = tg.create_task(scrape_fanduel())
-        pinnacle = tg.create_task(scrape_pinnacle())
-        draftkings = tg.create_task(scrape_draftkings())
-        mgm = tg.create_task(scrape_mgm())
-        betriver = tg.create_task(scrape_betriver())
-        ceasers = tg.create_task(scrape_ceasers())
-        pointsbet = tg.create_task(scrape_pointsbet())
+        for key in urls.keys():
+            results[key] = tg.create_task(scraping_functions[key](urls[key]))
 
-    big_dict = combine_data(
-        fanduel=fanduel.result(),
-        pinnacle=pinnacle.result(),
-        draftkings=draftkings.result(),
-        mgm=mgm.result(),
-        betriver=betriver.result(),
-        ceasers=ceasers.result(),
-        pointsbet=pointsbet.result()
-    )
+    results = {key: result.result() for key, result in results.items()}
+    big_dict = combine_data(**results)
     calc_evs(big_dict)
     write_to_csv(big_dict)
 
