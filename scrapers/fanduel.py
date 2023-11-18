@@ -3,6 +3,7 @@ from devtools import debug
 from scrapers.request_client import client
 from write import Betline
 from write import write_to_csv
+import datetime
 
 
 class Bet:
@@ -44,14 +45,32 @@ async def fanduel_request(url: str = None):
 def parse_fanduel(data: dict):
     markets = data.get("attachments", {}).get("markets", {})
 
+    currtime = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(tzinfo=None)
+        + datetime.timedelta(days=7)
+    )
+
+    tzcheck = False
+    if "nfl" in (
+        list(markets.values())[0].get("runners", [])[0].get("logo", "")
+    ):
+        tzcheck = True
+
     all_matchups = []
     for market in markets.values():
         if market.get("marketName", "") != "Moneyline":
             continue
 
+        dt = datetime.datetime.strptime(
+            market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+        if (dt > currtime) and tzcheck:
+            continue
+
         pair = []
         for runner in market.get("runners", []):
-            name = runner.get("runnerName")
+            name = runner.get("runnerName", "")
             odds: int = (
                 runner.get("winRunnerOdds", {})
                 .get("americanDisplayOdds")
