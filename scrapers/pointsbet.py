@@ -22,7 +22,13 @@ async def parse_pointsbet(data: dict):
     events = data.get("events", [])
     all_bets: list[Betline] = []
     for event in events:
-        market = event.get("fixedOddsMarkets", [])[0]
+        market = event.get("fixedOddsMarkets", [])
+
+        if not market:
+            market = event.get("specialFixedOddsMarkets", [])
+
+        market = market[0]
+
         bets = market.get("outcomes", [])
         pair = []
         for bet in bets:
@@ -43,5 +49,5 @@ async def scrape_pointsbet(url: str = None):
 
 
 if __name__ == "__main__":
-    bets = asyncio.run(scrape_pointsbet("https://api.nj.pointsbet.com/api/v2/sports/tennis/events/nextup?limit=50"))
+    bets = asyncio.run(scrape_pointsbet("https://api.co.pointsbet.com/api/v2/competitions/57/events/featured?includeLive=false&page=1"))
     debug(bets)

@@ -85,6 +85,7 @@ def combine_data(sport, **kwargs):
     name_indexes: dict = {
         "UFC": 1,
         "TEN": 0,
+        "NFL": 0,
     }
     big_dict = {}
     for key, value in kwargs.items():
