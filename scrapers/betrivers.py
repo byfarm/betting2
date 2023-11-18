@@ -35,13 +35,25 @@ async def parse_responses(data: list[dict]):
         events = response.get("items", [])
 
         for event in events:
-            outcomes = event.get("betOffers", [])[0].get("outcomes", [])
+            offers = event.get("betOffers", [])
+
+            names = event.get("participants", [])
+            names = [names[0].get("name", ""), names[1].get("name", "")]
+            for j, n in enumerate(names):
+                temp = n.strip(" ").split(",")
+                names[j] = " ".join(reversed(temp)).strip()
+
+            for offer in offers:
+                if offer.get("betDescription", "") == "Moneyline":
+                    outcomes = offer.get("outcomes", [])
+
+            if not outcomes:
+                continue
             pair = []
 
-            for outcome in outcomes:
+            for i, outcome in enumerate(outcomes):
                 odds = int(outcome.get("oddsAmerican", 0))
-                name = outcome.get("label", "").strip(" ").split(",")
-                name = " ".join(reversed(name)).strip()
+                name = names[i]
                 bet = Betline(name, odds)
                 pair.append(bet)
 
