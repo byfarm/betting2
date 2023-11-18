@@ -45,32 +45,16 @@ async def fanduel_request(url: str = None):
 def parse_fanduel(data: dict):
     markets = data.get("attachments", {}).get("markets", {})
 
-    currtime = (
-        datetime.datetime.now(datetime.timezone.utc)
-        .replace(tzinfo=None)
-        + datetime.timedelta(days=7)
-    )
-
-    tzcheck = False
-    if "nfl" in (
-        list(markets.values())[0].get("runners", [])[0].get("logo", "")
-    ):
-        tzcheck = True
-
     all_matchups = []
     for market in markets.values():
         if market.get("marketName", "") != "Moneyline":
             continue
 
-        dt = datetime.datetime.strptime(
-            market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
-        )
-        if (dt > currtime) and tzcheck:
-            continue
-
         pair = []
         for runner in market.get("runners", []):
             name = runner.get("runnerName", "")
+            if name in [x.name for x in all_matchups]:
+                break
             odds: int = (
                 runner.get("winRunnerOdds", {})
                 .get("americanDisplayOdds")
@@ -79,10 +63,11 @@ def parse_fanduel(data: dict):
             player = Betline(name, odds)
             pair.append(player)
 
-        pair[0].matchup, pair[1].matchup = pair[1], pair[0]
+        if len(pair) == 2:
+            pair[0].matchup, pair[1].matchup = pair[1], pair[0]
 
-        all_matchups.append(pair[0])
-        all_matchups.append(pair[1])
+            all_matchups.append(pair[0])
+            all_matchups.append(pair[1])
 
     return all_matchups
 
