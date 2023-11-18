@@ -29,4 +29,5 @@ async def main(sport: str = None):
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    sport = "NFL"
+    asyncio.run(main(sport))
