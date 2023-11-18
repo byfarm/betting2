@@ -30,12 +30,15 @@ async def parse_draftkings(json_data: dict):
 
         for player in section.get("outcomes", []):
             name = player.get("label", "")
+            if name in [x.name for x in all_bets]:
+                break
             odds = int(player.get("oddsAmerican", 0))
             bet = Betline(name, odds)
             matchup.append(bet)
 
-        matchup[0].matchup, matchup[1].matchup = matchup[1], matchup[0]
-        all_bets += matchup
+        if len(matchup) == 2:
+            matchup[0].matchup, matchup[1].matchup = matchup[1], matchup[0]
+            all_bets += matchup
     return all_bets
 
 

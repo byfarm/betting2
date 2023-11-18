@@ -39,9 +39,14 @@ async def parse_responses(data: list[dict]):
 
             names = event.get("participants", [])
             names = [names[0].get("name", ""), names[1].get("name", "")]
+            name_seen = [None, None]
             for j, n in enumerate(names):
                 temp = n.strip(" ").split(",")
                 names[j] = " ".join(reversed(temp)).strip()
+                name_seen[j] = names[j] in [x.name for x in all_bets]
+
+            if True in name_seen:
+                continue
 
             for offer in offers:
                 if offer.get("betDescription", "") == "Moneyline":
