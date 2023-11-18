@@ -81,13 +81,17 @@ def write_to_csv(big_dict: dict):
     writer._save()
 
 
-def combine_data(**kwargs):
+def combine_data(sport, **kwargs):
+    name_indexes: dict = {
+        "UFC": 1,
+        "TEN": 0,
+    }
     big_dict = {}
     for key, value in kwargs.items():
         for val in value:
             # get the name stored in the database
-            name = check_single_name(val.name)
-            opp_name = check_single_name(val.matchup.name)
+            name = check_single_name(val.name, name_indexes[sport])
+            opp_name = check_single_name(val.matchup.name, name_indexes[sport])
 
             # if the matchup not in, skip
             if not name or not opp_name:
