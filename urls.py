@@ -23,6 +23,17 @@ url_db = {
         "Pointsbet": "https://api.va.pointsbet.com/api/v2/competitions/16210/events/featured?includeLive=false&page=1",
     },
 
+    "NFL": {
+        "Ceasers": None,
+        "Draftkings": None,
+        "Betrivers": None,
+        "MGM": None,
+        "Fanduel": None,
+        "Pinnacle": None,
+        "Pointsbet": None,
+    },
+
+
     "TEN": {
         "Ceasers": None,
 
@@ -49,3 +60,13 @@ scraping_functions: dict = {
         "Pinnacle": scrape_pinnacle,
         "Pointsbet": scrape_pointsbet,
 }
+
+"""
+        "Ceasers": None,
+        "Draftkings": None,
+        "Betrivers": None,
+        "MGM": None,
+        "Fanduel": None,
+        "Pinnacle": None,
+        "Pointsbet": None,
+"""
