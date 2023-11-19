@@ -48,7 +48,7 @@ def parse_fanduel(data: dict):
     currtime = (
         datetime.datetime.now(datetime.timezone.utc)
         .replace(tzinfo=None)
-        + datetime.timedelta(days=7)
+        + datetime.timedelta(days=6)
     )
 
     tzcheck = False
@@ -58,6 +58,7 @@ def parse_fanduel(data: dict):
         tzcheck = True
 
     all_matchups = []
+    baddays = {"Thu", "Fri"}
     for market in markets.values():
         if market.get("marketName", "") != "Moneyline":
             continue
@@ -65,12 +66,15 @@ def parse_fanduel(data: dict):
         dt = datetime.datetime.strptime(
             market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
         )
-        if (dt > currtime) and tzcheck:
+        if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
             continue
 
+        # debug(market)
         pair = []
         for runner in market.get("runners", []):
             name = runner.get("runnerName", "")
+            if name in [x.name for x in all_matchups]:
+                break
             odds: int = (
                 runner.get("winRunnerOdds", {})
                 .get("americanDisplayOdds")
@@ -79,10 +83,11 @@ def parse_fanduel(data: dict):
             player = Betline(name, odds)
             pair.append(player)
 
-        pair[0].matchup, pair[1].matchup = pair[1], pair[0]
+        if len(pair) == 2:
+            pair[0].matchup, pair[1].matchup = pair[1], pair[0]
 
-        all_matchups.append(pair[0])
-        all_matchups.append(pair[1])
+            all_matchups.append(pair[0])
+            all_matchups.append(pair[1])
 
     return all_matchups
 
