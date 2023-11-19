@@ -14,13 +14,13 @@ url_db = {
 
         "Betrivers": "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=20239281120&cageCode=268&type=prematch&groupId=1000093883&pageNr=1&pageSize=20&offset=0",
 
-        "MGM": "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=SportLobby&sportId=45&widgetId=/mobilesports-v1.0/layout/layout_us/modules/ufc/mmalobby&shouldIncludePayload=true",
+        # "MGM": "https://sports.co.betmgm.com/en/sports/api/widget/widgetdata?layoutSize=Small&page=SportLobby&sportId=45&widgetId=/mobilesports-v1.0/layout/layout_us/modules/ufc/mmalobby&shouldIncludePayload=true",
 
         "Fanduel": "https://sbapi.nj.sportsbook.fanduel.com/api/content-managed-page?page=SPORT&eventTypeId=26420387&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FNew_York",
 
         "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/sports/22/markets/straight?primaryOnly=false&withSpecials=false",
 
-        "Pointsbet": "https://api.va.pointsbet.com/api/v2/competitions/16210/events/featured?includeLive=false&page=1",
+        # "Pointsbet": "https://api.va.pointsbet.com/api/v2/competitions/16210/events/featured?includeLive=false&page=1",
     },
 
     "NFL": {

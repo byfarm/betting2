@@ -23,6 +23,7 @@ async def main(sport: str = None):
             results[key] = tg.create_task(scraping_functions[key](urls[key]))
 
     results = {key: result.result() for key, result in results.items()}
+    debug(results)
     big_dict = combine_data(sport, **results)
     calc_evs(big_dict)
     write_to_csv(big_dict)
@@ -31,3 +32,9 @@ async def main(sport: str = None):
 if __name__ == "__main__":
     sport = "NFL"
     asyncio.run(main(sport))
+
+"""
+Sports:
+NFL
+UFC
+"""
