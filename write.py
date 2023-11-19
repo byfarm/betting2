@@ -96,6 +96,8 @@ def combine_data(sport, **kwargs):
 
             # if the matchup not in, skip
             if not name or not opp_name:
+                # print(name, opp_name)
+                # print(val.name, val.matchup.name)
                 continue
 
             name = name.title()
