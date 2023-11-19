@@ -18,7 +18,6 @@ class Bet:
 
 class Matchup:
     def __init__(self, data: dict):
-        debug(data)
         runners = data.get("runners", [])
         players = []
         for runner in runners:
@@ -48,7 +47,7 @@ def parse_fanduel(data: dict):
     currtime = (
         datetime.datetime.now(datetime.timezone.utc)
         .replace(tzinfo=None)
-        + datetime.timedelta(days=6)
+        + datetime.timedelta(days=5)
     )
 
     tzcheck = False
@@ -69,7 +68,6 @@ def parse_fanduel(data: dict):
         if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
             continue
 
-        # debug(market)
         pair = []
         for runner in market.get("runners", []):
             name = runner.get("runnerName", "")
@@ -89,6 +87,7 @@ def parse_fanduel(data: dict):
             all_matchups.append(pair[0])
             all_matchups.append(pair[1])
 
+    debug(all_matchups)
     return all_matchups
 
 

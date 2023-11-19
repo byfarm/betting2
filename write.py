@@ -85,11 +85,25 @@ def combine_data(sport, **kwargs):
     name_indexes: dict = {
         "UFC": 1,
         "TEN": 0,
-        "NFL": 0,
+        "NFL": 1,
+    }
+    name_change = {
+        "Los Angeles Rams": "Angeles LAR",
+        "LA Rams": "Angeles LAR",
+        "Los Angeles Chargers": "Angeles LAC",
+        "LA Charger": "Angeles LAC",
+        "NY Jets": "NYJ Jets",
+        "New York Jets": "NYJ Jets",
+        "NY Giants": "NYG Giants",
+        "New York Giants": "NYG Giants"
     }
     big_dict = {}
     for key, value in kwargs.items():
         for val in value:
+            if val.matchup.name in name_change.keys():
+                val.matchup.name = name_change[val.matchup.name]
+            if val.name in name_change.keys():
+                val.name = name_change[val.name]
             # get the name stored in the database
             name = check_single_name(val.name, name_indexes[sport])
             opp_name = check_single_name(val.matchup.name, name_indexes[sport])
@@ -104,8 +118,9 @@ def combine_data(sport, **kwargs):
             if not big_dict.get(name, None):
                 big_dict[name] = {}
 
-            big_dict[name][key] = val.odds
-            big_dict[name]["opponent"] = val.matchup
+            if key not in big_dict[name].keys():
+                big_dict[name][key] = val.odds
+                big_dict[name]["opponent"] = val.matchup.name
 
     # fileter out non-matching names
     bad_ones = set()

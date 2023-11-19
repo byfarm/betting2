@@ -3,6 +3,7 @@ from devtools import debug
 import json
 import asyncio
 from write import Betline
+import datetime
 
 
 async def request_betriver(url: str = None):
@@ -31,6 +32,12 @@ async def request_betriver(url: str = None):
 async def parse_responses(data: list[dict]):
     all_bets: list = []
 
+    currtime = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(tzinfo=None)
+        + datetime.timedelta(days=5)
+    )
+    baddays = {"Thu", "Fri"}
     for response in data:
         events = response.get("items", [])
 
@@ -45,6 +52,13 @@ async def parse_responses(data: list[dict]):
                 names[j] = " ".join(reversed(temp)).strip()
                 name_seen[j] = names[j] in [x.name for x in all_bets]
 
+            date_obj = datetime.datetime.strptime(
+                event.get("start"), "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
+            # print(date_obj.strftime("%a"))
+            if event.get("eventInfo")[-1].get("name", "") == "NFL":
+                if (date_obj > currtime) or date_obj.strftime("%a") in baddays:
+                    continue
             if True in name_seen:
                 continue
 
