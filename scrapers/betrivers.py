@@ -35,13 +35,30 @@ async def parse_responses(data: list[dict]):
         events = response.get("items", [])
 
         for event in events:
-            outcomes = event.get("betOffers", [])[0].get("outcomes", [])
+            offers = event.get("betOffers", [])
+
+            names = event.get("participants", [])
+            names = [names[0].get("name", ""), names[1].get("name", "")]
+            name_seen = [None, None]
+            for j, n in enumerate(names):
+                temp = n.strip(" ").split(",")
+                names[j] = " ".join(reversed(temp)).strip()
+                name_seen[j] = names[j] in [x.name for x in all_bets]
+
+            if True in name_seen:
+                continue
+
+            for offer in offers:
+                if offer.get("betDescription", "") == "Moneyline":
+                    outcomes = offer.get("outcomes", [])
+
+            if not outcomes:
+                continue
             pair = []
 
-            for outcome in outcomes:
+            for i, outcome in enumerate(outcomes):
                 odds = int(outcome.get("oddsAmerican", 0))
-                name = outcome.get("label", "").strip(" ").split(",")
-                name = " ".join(reversed(name)).strip()
+                name = names[i]
                 bet = Betline(name, odds)
                 pair.append(bet)
 
@@ -57,4 +74,6 @@ async def scrape_betriver(url: str = None):
 
 
 if __name__ == "__main__":
-    asyncio.run(scrape_betriver())
+    url = "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=202310181910&cageCode=268&type=live&type=prematch&groupId=1000093656&pageNr=1&pageSize=10&offset=0"
+    res = asyncio.run(scrape_betriver(url))
+    debug(res)

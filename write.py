@@ -4,7 +4,7 @@ from devtools import debug
 from name_comparitor import check_single_name
 
 
-def write_to_csv(big_dict: dict):
+def write_to_csv(big_dict: dict, filepath: str):
     put_in: dict = {"names": []}
     for name, value in big_dict.items():
         put_in["names"].append(name)
@@ -25,7 +25,7 @@ def write_to_csv(big_dict: dict):
     col_list.insert(-1, "Pinnacle")
     df = df[col_list]
 
-    writer = pd.ExcelWriter('data.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
     df.to_excel(writer, sheet_name="Sheet1", index=False)
     # Get the xlsxwriter workbook and worksheet objects.
     workbook = writer.book
@@ -54,8 +54,8 @@ def write_to_csv(big_dict: dict):
     worksheet.conditional_format(
         start_row, start_col, end_row, end_col, {
             'type': 'cell',
-            'criteria': '>',
-            'value': 1.5,
+            'criteria': '>=',
+            'value': 1.0,
             'format': red_background
         }
     )
@@ -85,6 +85,7 @@ def combine_data(sport, **kwargs):
     name_indexes: dict = {
         "UFC": 1,
         "TEN": 0,
+        "NFL": 0,
     }
     big_dict = {}
     for key, value in kwargs.items():
@@ -95,6 +96,8 @@ def combine_data(sport, **kwargs):
 
             # if the matchup not in, skip
             if not name or not opp_name:
+                # print(name, opp_name)
+                # print(val.name, val.matchup.name)
                 continue
 
             name = name.title()

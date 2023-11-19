@@ -1,4 +1,6 @@
+import pandas as pd
 names_db: list[list[str]] = []
+nfl_enum = pd.read_csv("enums.csv")
 
 
 def check_names(names_to_check: list[str], name_index: int = None):
@@ -55,8 +57,18 @@ def add_names(names: list[str]):
     adds a list of names into the db
     """
     for name in names:
+        if namecheck(name, nfl_enum["Name"]):
+            idx = list(nfl_enum["Name"]).index(name)
+            name += " " + list(nfl_enum["Abbreviation"])[idx]
         name = name.lower()
         names_db.append(name.split(" "))
+
+
+def namecheck(name, lis):
+    for r in lis:
+        if r == name:
+            return True
+    return False
 
 
 if __name__ == "__main__":

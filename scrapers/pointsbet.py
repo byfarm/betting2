@@ -1,4 +1,5 @@
 from scrapers.request_client import client
+import datetime
 import json
 from devtools import debug
 import asyncio
@@ -21,18 +22,43 @@ async def pointsbet_request(url: str = None):
 async def parse_pointsbet(data: dict):
     events = data.get("events", [])
     all_bets: list[Betline] = []
+    currtime = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(tzinfo=None)
+        + datetime.timedelta(days=6)
+    )
+    baddays = {"Thu", "Fri"}
     for event in events:
-        market = event.get("fixedOddsMarkets", [])[0]
+
+        market = event.get("fixedOddsMarkets", [])
+
+        if not market:
+            market = event.get("specialFixedOddsMarkets", [])
+
+        market = market[0]
+
+        tzcheck = True if event.get("sportKey") == "american-football" else False
+
+        dt = datetime.datetime.strptime(
+            market.get("advertisedStartTime"), "%Y-%m-%dT%H:%M:%SZ"
+        )
+
+        if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
+            continue
+
         bets = market.get("outcomes", [])
         pair = []
         for bet in bets:
             odd: int = decimal_to_american(bet.get("price", 0))
             name: str = bet.get("name", "")
+            if name in [x.name for x in all_bets]:
+                break
             card = Betline(name, odd)
             pair.append(card)
 
-        pair[0].matchup, pair[1].matchup = pair[1], pair[0]
-        all_bets += pair
+        if len(pair) == 2:
+            pair[0].matchup, pair[1].matchup = pair[1], pair[0]
+            all_bets += pair
     return all_bets
 
 
@@ -43,5 +69,5 @@ async def scrape_pointsbet(url: str = None):
 
 
 if __name__ == "__main__":
-    bets = asyncio.run(scrape_pointsbet("https://api.nj.pointsbet.com/api/v2/sports/tennis/events/nextup?limit=50"))
+    bets = asyncio.run(scrape_pointsbet("https://api.co.pointsbet.com/api/v2/competitions/57/events/featured?includeLive=false&page=1"))
     debug(bets)
