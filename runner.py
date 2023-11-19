@@ -1,16 +1,9 @@
-import json
-from scrapers.fanduel import scrape_fanduel
-from scrapers.pinnacle import scrape_pinnacle
-from scrapers.draftkings import scrape_draftkings
-from scrapers.betrivers import scrape_betriver
-from scrapers.ceasers import scrape_ceasers
-from scrapers.mgm import scrape_mgm
-from scrapers.pointsbet import scrape_pointsbet
 from write import combine_data, write_to_csv
 import asyncio
 from plus_ev import calc_evs
 from devtools import debug
 from urls import url_db, scraping_functions
+import sys
 
 
 async def main(sport: str = None):
@@ -23,14 +16,13 @@ async def main(sport: str = None):
             results[key] = tg.create_task(scraping_functions[key](urls[key]))
 
     results = {key: result.result() for key, result in results.items()}
-    debug(results)
     big_dict = combine_data(sport, **results)
     calc_evs(big_dict)
-    write_to_csv(big_dict)
+    write_to_csv(big_dict, f"{sport}.xlsx")
 
 
 if __name__ == "__main__":
-    sport = "NFL"
+    sport = sys.argv[1] if len(sys.argv) == 2 else None
     asyncio.run(main(sport))
 
 """
