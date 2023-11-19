@@ -35,6 +35,8 @@ async def parse_pointsbet(data: dict):
         if not market:
             market = event.get("specialFixedOddsMarkets", [])
 
+        if not market:
+            continue
         market = market[0]
 
         tzcheck = True if event.get("sportKey") == "american-football" else False

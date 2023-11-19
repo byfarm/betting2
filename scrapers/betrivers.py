@@ -16,15 +16,20 @@ async def request_betriver(url: str = None):
 
     responses: list[dict] = [bets_response]
 
-    for i in range(2, total_pages + 1):
-        queries = url.split("&")
-        queries[-3] = f"pageNr={i}"
-        url = "&".join(queries)
+    async_reses: list = []
+    async with asyncio.TaskGroup() as tg:
+        for i in range(2, total_pages + 1):
+            queries = url.split("&")
+            queries[-3] = f"pageNr={i}"
+            url = "&".join(queries)
 
-        bets_response = await client.request("GET", url)
-        bets_response = bets_response.json()
+            bets_response = tg.create_task(client.request("GET", url))
+            async_reses.append(bets_response)
 
-        responses.append(bets_response)
+    for res in async_reses:
+        ar = res.result().json()
+
+        responses.append(ar)
 
     return responses
 
@@ -62,6 +67,7 @@ async def parse_responses(data: list[dict]):
             if True in name_seen:
                 continue
 
+            outcomes = None
             for offer in offers:
                 if offer.get("betDescription", "") == "Moneyline":
                     outcomes = offer.get("outcomes", [])

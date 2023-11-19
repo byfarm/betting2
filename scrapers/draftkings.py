@@ -25,7 +25,10 @@ async def parse_draftkings(json_data: dict):
 
     all_bets: list = []
     for offer in bet_offers:
-        section = [sec for sec in offer if sec.get("label") == "Moneyline"][0]
+        try:
+            section = [sec for sec in offer if sec.get("label") == "Moneyline"][0]
+        except IndexError:
+            continue
 
         matchup: list = []
         for player in section.get("outcomes", []):

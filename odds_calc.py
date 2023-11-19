@@ -25,7 +25,6 @@ def decimal_to_american(decimal_odd: float) -> int:
         else:
             return -10000
 
-
 if __name__ == "__main__":
     percentage = american_to_percentage(-300)
     print(percentage)

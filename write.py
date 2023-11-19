@@ -5,9 +5,9 @@ from name_comparitor import check_single_name
 
 
 def write_to_csv(big_dict: dict, filepath: str):
-    put_in: dict = {"names": []}
+    put_in: dict = {"Names": []}
     for name, value in big_dict.items():
-        put_in["names"].append(name)
+        put_in["Names"].append(name)
 
         for site, odd in value.items():
             if site == "opponent":
@@ -23,6 +23,8 @@ def write_to_csv(big_dict: dict, filepath: str):
     col_list = df.columns.to_list()
     col_list.remove("Pinnacle")
     col_list.insert(-1, "Pinnacle")
+    col_list.remove("Kelly")
+    col_list.append("Kelly")
     df = df[col_list]
 
     writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
@@ -46,22 +48,22 @@ def write_to_csv(big_dict: dict, filepath: str):
     )
     # Set the conditional format range.
     start_row = 1
-    start_col = len(df.columns) - 1
+    start_col = len(df.columns) - 2
     end_row = len(df)
     end_col = start_col
 
-    # Apply a conditional format to the cell range.
+    # Apply a red background format to the cell range.
     worksheet.conditional_format(
-        start_row, start_col, end_row, end_col, {
+        start_row, start_col, end_row, end_col+1, {
             'type': 'cell',
-            'criteria': '>=',
-            'value': 1.0,
+            'criteria': '>',
+            'value': 0.0,
             'format': red_background
         }
     )
 
     # write green_background for best bets for each player
-    max_df = df[col_list[1:-2]]
+    max_df = df[col_list[1:-3]]
     for idx, row in max_df.iterrows():
         row_min = row.max()
         col_index = list(row).index(row_min)
