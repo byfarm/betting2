@@ -100,8 +100,11 @@ async def pinnacle_parse(bets_response: dict, matchups_response: dict):
     for bet in bets:
         if not bet.get("type", "") == "moneyline":
             continue
-
+        if not bet.get("period") == 0:
+            continue
         if len(bet.get("prices", [])) < 2:
+            continue
+        if "points" in bet.get("prices", {})[0].keys():
             continue
 
         id = bet.get("matchupId", "")
@@ -110,6 +113,13 @@ async def pinnacle_parse(bets_response: dict, matchups_response: dict):
             all_bets[id]
         except KeyError:
             all_bets[id] = moneyline
+    #     try:
+    #         all_bets[id] += [bet]
+    #     except KeyError:
+    #         all_bets[id] = [bet]
+    # for k, r in all_bets.items():
+    #     if len(r) > 1:
+    #         debug(k, r)
 
     # find the matchups and pair them with their ids
     all_matchups: set = []
