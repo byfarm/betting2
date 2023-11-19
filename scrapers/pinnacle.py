@@ -33,6 +33,9 @@ class PinnacleMatchup:
         date_format: str = '%Y-%m-%dT%H:%M:%SZ'
         self.start_time = datetime.strptime(time, date_format)
 
+    def __repr__(self):
+        return f"{self.home}, {self.away}, {self.id}"
+
 
 class Moneyline:
     def __init__(self, data: dict):
@@ -50,6 +53,9 @@ class Moneyline:
             self.bet1 = participant2.get("price", 0)
         else:
             self.bet2 = participant2.get("price", 0)
+
+    def __repr__(self):
+        return f"{self.bet1}, {self.bet2}"
 
 
 async def pinnacle_request(url: str = None):
@@ -100,7 +106,10 @@ async def pinnacle_parse(bets_response: dict, matchups_response: dict):
 
         id = bet.get("matchupId", "")
         moneyline = Moneyline(bet)
-        all_bets[id] = moneyline
+        try:
+            all_bets[id]
+        except KeyError:
+            all_bets[id] = moneyline
 
     # find the matchups and pair them with their ids
     all_matchups: set = []
