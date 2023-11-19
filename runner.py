@@ -21,9 +21,16 @@ async def main(sport: str = None):
     write_to_csv(big_dict, f"{sport}.xlsx")
 
 
+async def run_scraper():
+    async with asyncio.TaskGroup() as tg:
+        if len(sys.argv) > 1:
+            for sport in sys.argv[1:]:
+                tg.create_task(main(sport))
+        else:
+            tg.create_task(main())
+
 if __name__ == "__main__":
-    sport = sys.argv[1] if len(sys.argv) == 2 else None
-    asyncio.run(main(sport))
+    asyncio.run(run_scraper())
 
 """
 Sports:

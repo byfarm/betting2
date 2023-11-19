@@ -1,3 +1,5 @@
-export PYTHONPATH='.'
-python3 /home/bucks/coding/python/betting/runner.py
-wslview data.xlsx
+#!/bin/bash
+
+python3 runner.py UFC NFL
+wslview UFC.xlsx
+wslview NFL.xlsx
