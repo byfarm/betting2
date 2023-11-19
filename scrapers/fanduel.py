@@ -87,7 +87,6 @@ def parse_fanduel(data: dict):
             all_matchups.append(pair[0])
             all_matchups.append(pair[1])
 
-    debug(all_matchups)
     return all_matchups
 
 

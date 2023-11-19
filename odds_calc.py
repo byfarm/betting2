@@ -20,7 +20,10 @@ def decimal_to_american(decimal_odd: float) -> int:
     if decimal_odd >= 2:
         return round((decimal_odd - 1) * 100)
     else:
-        return round(-100 / (decimal_odd - 1))
+        if decimal_odd != 1:
+            return round(-100 / (decimal_odd - 1))
+        else:
+            return -10000
 
 
 if __name__ == "__main__":
