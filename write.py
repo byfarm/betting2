@@ -110,10 +110,10 @@ def combine_data(sport, **kwargs):
                 val.name = name_change[val.name]
             # get the name stored in the database
             name = check_single_name(val.name, name_indexes[sport])
-            opp_name = check_single_name(val.matchup.name, name_indexes[sport])
+            # opp_name = check_single_name(val.matchup.name, name_indexes[sport])
 
             # if the matchup not in, skip
-            if not name or not opp_name:
+            if not name:
                 # print(name, opp_name)
                 # print(val.name, val.matchup.name)
                 continue
