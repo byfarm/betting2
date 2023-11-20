@@ -90,6 +90,7 @@ def combine_data(sport, **kwargs):
         "UFC": 1,
         "TEN": 0,
         "NFL": 1,
+        "NBA": 1,
     }
     name_change = {
         "Los Angeles Rams": "Angeles LAR",
@@ -99,7 +100,11 @@ def combine_data(sport, **kwargs):
         "NY Jets": "NYJ Jets",
         "New York Jets": "NYJ Jets",
         "NY Giants": "NYG Giants",
-        "New York Giants": "NYG Giants"
+        "New York Giants": "NYG Giants",
+        "LA Clippers": "LAC Clippers",
+        "Los Angeles Clippers": "LAC Clippers",
+        "LA Lakers": "LAL Lakers",
+        "Los Anngeles Lakers": "LAL Lakers",
     }
     big_dict = {}
     for key, value in kwargs.items():
@@ -110,12 +115,12 @@ def combine_data(sport, **kwargs):
                 val.name = name_change[val.name]
             # get the name stored in the database
             name = check_single_name(val.name, name_indexes[sport])
-            # opp_name = check_single_name(val.matchup.name, name_indexes[sport])
+            opp_name = check_single_name(val.matchup.name, name_indexes[sport])
 
             # if the matchup not in, skip
             if not name:
-                # print(name, opp_name)
-                # print(val.name, val.matchup.name)
+                print(name, opp_name)
+                print(val.name, val.matchup.name)
                 continue
 
             name = name.title()

@@ -150,7 +150,7 @@ async def scrape_pinnacle(url: str = None):
 
 
 if __name__ == "__main__":
-    url = "https://guest.api.arcadia.pinnacle.com/0.1/leagues/889/markets/straight"
+    url = "https://guest.api.arcadia.pinnacle.com/0.1/leagues/487/markets/straight"
     import asyncio
     res = asyncio.run(scrape_pinnacle(url))
     debug(res)

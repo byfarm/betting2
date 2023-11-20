@@ -1,6 +1,8 @@
 import pandas as pd
+from devtools import debug
 names_db: list[list[str]] = []
 nfl_enum = pd.read_csv("~/coding/python/betting/enums.csv")
+nba_enum = pd.read_csv("~/coding/python/betting/NBA.csv")
 
 
 def check_names(names_to_check: list[str], name_index: int = None):
@@ -60,8 +62,14 @@ def add_names(names: list[str]):
         if namecheck(name, nfl_enum["Name"]):
             idx = list(nfl_enum["Name"]).index(name)
             name += " " + list(nfl_enum["Abbreviation"])[idx]
+
+        elif namecheck(name, nba_enum["name"]):
+            idx = list(nba_enum["name"]).index(name)
+            name += " " + list(nba_enum["prefix_1"])[idx]
+
         name = name.lower()
         names_db.append(name.split(" "))
+    debug(names_db)
 
 
 def namecheck(name, lis):
@@ -72,7 +80,6 @@ def namecheck(name, lis):
 
 
 if __name__ == "__main__":
-    from devtools import debug
     names_in = ["byron farmar"]
     names_check = ["byron george Farmar", "sarah Jones", "Byron Jones"]
     add_names(names_check)

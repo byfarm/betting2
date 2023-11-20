@@ -32,6 +32,7 @@ async def parse_draftkings(json_data: dict):
 
         matchup: list = []
         for player in section.get("outcomes", []):
+            # debug(player)
             name = player.get("label", "")
             odds = int(player.get("oddsAmerican", 0))
             if name in [x.name for x in all_bets]:
@@ -53,7 +54,7 @@ async def scrape_draftkings(url: str = None):
 
 
 if __name__ == "__main__":
-    url = "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/88808?format=json"
+    url = "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/42648?format=json"
     # url = None
     res = asyncio.run(scrape_draftkings(url))
     debug(res)

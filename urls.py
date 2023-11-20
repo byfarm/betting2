@@ -55,6 +55,20 @@ url_db = {
 
         "Pointsbet": "https://api.nj.pointsbet.com/api/v2/sports/tennis/events/nextup?limit=50""",
     },
+
+    "NBA": {
+        # "Ceasers": None,
+
+        "Draftkings": "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/42648?format=json",
+
+        # "Betrivers": None,
+        # "MGM": None,
+        # "Fanduel": None,
+
+        "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/487/markets/straight",
+
+        # "Pointsbet": None,
+    }
 }
 
 scraping_functions: dict = {
