@@ -67,7 +67,7 @@ url_db = {
 
         "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/487/markets/straight",
 
-        # "Pointsbet": None,
+        "Pointsbet": "https://api.co.pointsbet.com/api/v2/competitions/58/events/featured?includeLive=false&page=1",
     }
 }
 

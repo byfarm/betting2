@@ -39,7 +39,16 @@ async def parse_pointsbet(data: dict):
 
         if not market:
             continue
-        market = market[0]
+        if market[0].get("sportKey", "") == "mma":
+            market_check = "Fight Result"
+        else:
+            market_check = "Moneyline"
+
+        market = [x for x in market if x.get("eventClass", "") == market_check]
+        try:
+            market = market[0]
+        except IndexError:
+            continue
 
         # tzcheck = True if event.get("sportKey") == "american-football" else False
         #
@@ -73,5 +82,5 @@ async def scrape_pointsbet(url: str = None):
 
 
 if __name__ == "__main__":
-    bets = asyncio.run(scrape_pointsbet("https://api.co.pointsbet.com/api/v2/competitions/57/events/featured?includeLive=false&page=1"))
+    bets = asyncio.run(scrape_pointsbet("https://api.co.pointsbet.com/api/v2/competitions/58/events/featured?includeLive=false&page=1"))
     debug(bets)
