@@ -57,7 +57,7 @@ url_db = {
     },
 
     "NBA": {
-        # "Ceasers": None,
+        "Ceasers": "https://api.americanwagering.com/regions/us/locations/co/brands/czr/sb/v3/sports/basketball/events/schedule/",
 
         "Draftkings": "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/42648?format=json",
 

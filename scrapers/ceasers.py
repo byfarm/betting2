@@ -48,6 +48,6 @@ async def scrape_ceasers(url: str = None):
 
 
 if __name__ == "__main__":
-    url = "https://api.americanwagering.com/regions/us/locations/wa-ms/brands/czr/sb/v3/sports/americanfootball/events/schedule"
+    url = "https://api.americanwagering.com/regions/us/locations/co/brands/czr/sb/v3/sports/basketball/events/schedule/"
     res = asyncio.run(scrape_ceasers(url))
     debug(res)

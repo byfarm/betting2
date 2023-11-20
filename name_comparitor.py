@@ -69,7 +69,7 @@ def add_names(names: list[str]):
 
         name = name.lower()
         names_db.append(name.split(" "))
-    debug(names_db)
+    # debug(names_db)
 
 
 def namecheck(name, lis):
