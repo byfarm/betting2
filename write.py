@@ -1,13 +1,12 @@
 import pandas as pd
-from odds_calc import american_to_percentage
 from devtools import debug
 from name_comparitor import check_single_name
 
 
 def write_to_csv(big_dict: dict, filepath: str):
-    put_in: dict = {"Names": []}
+    put_in: dict = {"Name": []}
     for name, value in big_dict.items():
-        put_in["Names"].append(name)
+        put_in["Name"].append(name)
 
         for site, odd in value.items():
             if site == "opponent":
@@ -80,6 +79,9 @@ def write_to_csv(big_dict: dict, filepath: str):
                         "format": bottom_boarder
                     }
                 )
+
+    column_length = max(df["Name"].astype(str).map(len).max(), len(df["Name"]))
+    writer.sheets['Sheet1'].set_column(0, 0, column_length)
     writer._save()
 
 

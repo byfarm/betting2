@@ -1,6 +1,6 @@
 import pandas as pd
 names_db: list[list[str]] = []
-nfl_enum = pd.read_csv("enums.csv")
+nfl_enum = pd.read_csv("~/coding/python/betting/enums.csv")
 
 
 def check_names(names_to_check: list[str], name_index: int = None):

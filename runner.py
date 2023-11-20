@@ -5,8 +5,11 @@ from devtools import debug
 from urls import url_db, scraping_functions
 import sys
 
+filepath = "/mnt/c/Users/bucks/OneDrive/Documents/coding/Python/betting2"
+
 
 async def main(sport: str = None):
+    print("running scrape")
     if not sport:
         sport = "UFC"
     urls = url_db[sport]
@@ -18,7 +21,8 @@ async def main(sport: str = None):
     results = {key: result.result() for key, result in results.items()}
     big_dict = combine_data(sport, **results)
     calc_evs(big_dict)
-    write_to_csv(big_dict, f"{sport}.xlsx")
+    write_to_csv(big_dict, filepath + f"/{sport}.xlsx")
+    print("completed scrape")
 
 
 async def run_scraper():
