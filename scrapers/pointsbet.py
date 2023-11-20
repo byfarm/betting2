@@ -22,12 +22,14 @@ async def pointsbet_request(url: str = None):
 async def parse_pointsbet(data: dict):
     events = data.get("events", [])
     all_bets: list[Betline] = []
-    currtime = (
-        datetime.datetime.now(datetime.timezone.utc)
-        .replace(tzinfo=None)
-        + datetime.timedelta(days=6)
-    )
-    baddays = {"Thu", "Fri"}
+
+    # currtime = (
+    #     datetime.datetime.now(datetime.timezone.utc)
+    #     .replace(tzinfo=None)
+    #     + datetime.timedelta(days=6)
+    # )
+    # baddays = {"Thu", "Fri"}
+
     for event in events:
 
         market = event.get("fixedOddsMarkets", [])
@@ -39,14 +41,14 @@ async def parse_pointsbet(data: dict):
             continue
         market = market[0]
 
-        tzcheck = True if event.get("sportKey") == "american-football" else False
-
-        dt = datetime.datetime.strptime(
-            market.get("advertisedStartTime"), "%Y-%m-%dT%H:%M:%SZ"
-        )
-
-        if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
-            continue
+        # tzcheck = True if event.get("sportKey") == "american-football" else False
+        #
+        # dt = datetime.datetime.strptime(
+        #     market.get("advertisedStartTime"), "%Y-%m-%dT%H:%M:%SZ"
+        # )
+        #
+        # if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
+        #     continue
 
         bets = market.get("outcomes", [])
         pair = []

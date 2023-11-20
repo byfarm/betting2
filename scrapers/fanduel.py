@@ -44,29 +44,29 @@ async def fanduel_request(url: str = None):
 def parse_fanduel(data: dict):
     markets = data.get("attachments", {}).get("markets", {})
 
-    currtime = (
-        datetime.datetime.now(datetime.timezone.utc)
-        .replace(tzinfo=None)
-        + datetime.timedelta(days=5)
-    )
+    # currtime = (
+    #     datetime.datetime.now(datetime.timezone.utc)
+    #     .replace(tzinfo=None)
+    #     + datetime.timedelta(days=5)
+    # )
+    #
+    # tzcheck = False
+    # if "nfl" in (
+    #     list(markets.values())[0].get("runners", [])[0].get("logo", "")
+    # ):
+    #     tzcheck = True
 
-    tzcheck = False
-    if "nfl" in (
-        list(markets.values())[0].get("runners", [])[0].get("logo", "")
-    ):
-        tzcheck = True
-
+    # baddays = {"Thu", "Fri"}
     all_matchups = []
-    baddays = {"Thu", "Fri"}
     for market in markets.values():
         if market.get("marketName", "") != "Moneyline":
             continue
 
-        dt = datetime.datetime.strptime(
-            market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
-        )
-        if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
-            continue
+        # dt = datetime.datetime.strptime(
+        #     market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
+        # )
+        # if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
+        #     continue
 
         pair = []
         for runner in market.get("runners", []):
