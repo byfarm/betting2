@@ -2,4 +2,4 @@
 
 
 python3 runner.py UFC
-wslview UFC.xlsx
+wslview /mnt/c/Users/bucks/OneDrive/Documents/coding/Python/betting2/UFC.xlsx
