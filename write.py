@@ -64,9 +64,11 @@ def write_to_csv(big_dict: dict, filepath: str):
     # write green_background for best bets for each player
     max_df = df[col_list[1:-3]]
     for idx, row in max_df.iterrows():
-        row_min = row.max()
-        col_index = list(row).index(row_min)
-        worksheet.write(1 + idx, 1 + col_index, row_min, green_background)
+        row_max = row.max()
+        col_indexes = [i for i, l in enumerate(row) if l == row_max]
+
+        for col_idx in col_indexes:
+            worksheet.write(1 + idx, 1 + col_idx, row_max, green_background)
 
         # write in boarders between matchups
         if idx % 2 == 0:
@@ -90,30 +92,38 @@ def combine_data(sport, **kwargs):
         "UFC": 1,
         "TEN": 0,
         "NFL": 1,
+        "NBA": 1,
     }
     name_change = {
         "Los Angeles Rams": "Angeles LAR",
         "LA Rams": "Angeles LAR",
         "Los Angeles Chargers": "Angeles LAC",
         "LA Charger": "Angeles LAC",
-        "NY Jets": "NYJ Jets",
-        "New York Jets": "NYJ Jets",
-        "NY Giants": "NYG Giants",
-        "New York Giants": "NYG Giants"
+        "NY Jets": "NYJ Jets York",
+        "New York Jets": "NYJ Jets York",
+        "NY Giants": "NYG Giants York",
+        "New York Giants": "NYG Giants York",
+        "LA Clippers": "LAC Clippers",
+        "Los Angeles Clippers": "LAC Clippers",
+        "LA Lakers": "LAL Lakers",
+        "Los Anngeles Lakers": "LAL Lakers",
     }
     big_dict = {}
     for key, value in kwargs.items():
         for val in value:
             if val.matchup.name in name_change.keys():
                 val.matchup.name = name_change[val.matchup.name]
+                # print(val.matchup.name)
             if val.name in name_change.keys():
                 val.name = name_change[val.name]
+                # print(val.name)
             # get the name stored in the database
             name = check_single_name(val.name, name_indexes[sport])
             opp_name = check_single_name(val.matchup.name, name_indexes[sport])
 
             # if the matchup not in, skip
             if not name or not opp_name:
+                # if name or opp_name:
                 # print(name, opp_name)
                 # print(val.name, val.matchup.name)
                 continue
@@ -127,6 +137,7 @@ def combine_data(sport, **kwargs):
                 big_dict[name]["opponent"] = val.matchup.name
 
     # fileter out non-matching names
+    # debug(big_dict)
     bad_ones = set()
     for name, values in big_dict.items():
         if len(values.values()) - 1 < len(kwargs.keys()):
@@ -147,4 +158,4 @@ class Betline:
         self.odds: dict = odds
 
     def __repr__(self):
-        return f"{self.name}: {self.odds}"
+        return f"{self.name}: {self.odds}:::{self.matchup.name}"

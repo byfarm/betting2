@@ -55,6 +55,22 @@ url_db = {
 
         "Pointsbet": "https://api.nj.pointsbet.com/api/v2/sports/tennis/events/nextup?limit=50""",
     },
+
+    "NBA": {
+        "Ceasers": "https://api.americanwagering.com/regions/us/locations/co/brands/czr/sb/v3/sports/basketball/events/schedule/",
+
+        "Draftkings": "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/42648?format=json",
+
+        "Betrivers": "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=202310211550&cageCode=268&type=live&type=prematch&groupId=1000093652&pageNr=1&pageSize=10&offset=0",
+
+        # "MGM": None,
+
+        "Fanduel": "https://sbapi.co.sportsbook.fanduel.com/api/content-managed-page?page=CUSTOM&customPageId=nba&pbHorizontal=false&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FDenver",
+
+        "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/487/markets/straight",
+
+        "Pointsbet": "https://api.co.pointsbet.com/api/v2/competitions/58/events/featured?includeLive=false&page=1",
+    }
 }
 
 scraping_functions: dict = {
