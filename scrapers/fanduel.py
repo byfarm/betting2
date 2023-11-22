@@ -44,29 +44,28 @@ async def fanduel_request(url: str = None):
 def parse_fanduel(data: dict):
     markets = data.get("attachments", {}).get("markets", {})
 
-    # currtime = (
-    #     datetime.datetime.now(datetime.timezone.utc)
-    #     .replace(tzinfo=None)
-    #     + datetime.timedelta(days=5)
-    # )
-    #
-    # tzcheck = False
-    # if "nfl" in (
-    #     list(markets.values())[0].get("runners", [])[0].get("logo", "")
-    # ):
-    #     tzcheck = True
+    currtime = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(tzinfo=None)
+        + datetime.timedelta(days=6)
+    )
 
-    # baddays = {"Thu", "Fri"}
+    tzcheck = False
+    if "nfl" in (
+        list(markets.values())[0].get("runners", [])[0].get("logo", "")
+    ):
+        tzcheck = True
+
     all_matchups = []
     for market in markets.values():
         if market.get("marketName", "") != "Moneyline":
             continue
 
-        # dt = datetime.datetime.strptime(
-        #     market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
-        # )
-        # if ((dt > currtime) and tzcheck) or dt.strftime("%a") in baddays:
-        #     continue
+        dt = datetime.datetime.strptime(
+            market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+        if ((dt > currtime) and tzcheck):
+            continue
 
         pair = []
         for runner in market.get("runners", []):
@@ -93,11 +92,12 @@ def parse_fanduel(data: dict):
 async def scrape_fanduel(url: str = None):
     data = await fanduel_request(url)
     all_matchups = parse_fanduel(data)
+    # debug(all_matchups)
     return all_matchups
 
 
 if __name__ == "__main__":
-    url = "https://sbapi.co.sportsbook.fanduel.com/api/content-managed-page?page=CUSTOM&customPageId=nfl&pbHorizontal=false&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FDenver"
+    url = "https://sbapi.co.sportsbook.fanduel.com/api/content-managed-page?page=CUSTOM&customPageId=nba&pbHorizontal=false&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FDenver"
     import asyncio
     data = asyncio.run(scrape_fanduel(url))
     debug(data)

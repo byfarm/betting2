@@ -61,9 +61,11 @@ url_db = {
 
         "Draftkings": "https://sportsbook-us-co.draftkings.com/sites/US-CO-SB/api/v5/eventgroups/42648?format=json",
 
-        # "Betrivers": None,
+        "Betrivers": "https://pa.betrivers.com/api/service/sportsbook/offering/listview/events?t=202310211550&cageCode=268&type=live&type=prematch&groupId=1000093652&pageNr=1&pageSize=10&offset=0",
+
         # "MGM": None,
-        # "Fanduel": None,
+
+        "Fanduel": "https://sbapi.co.sportsbook.fanduel.com/api/content-managed-page?page=CUSTOM&customPageId=nba&pbHorizontal=false&_ak=FhMFpcPWXMeyZxOx&timezone=America%2FDenver",
 
         "Pinnacle": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/487/markets/straight",
 

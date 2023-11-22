@@ -9,7 +9,7 @@ sys.path.append("~/coding/python/betting")
 
 
 def index(response):
-    strg = "Navigate to Either /ufc or /nfl in url"
+    strg = "Navigate to /nba, /ufc, or /nfl in url"
     return HttpResponse(strg)
 
 
@@ -36,5 +36,5 @@ def nba(response):
     subprocess.run(["python3", "../runner.py", "NBA"])
 
     # pull up the excel file
-    embed_str = '<iframe width="700" height="500" frameborder="0" scrolling="no" src="https://onedrive.live.com/embed?resid=2A3A8CDEE718E8C2%2115203&authkey=%21AEUDpZYPxhkEiZ8&em=2&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>'
+    embed_str = '<iframe width="800" height="500" frameborder="0" scrolling="no" src="https://onedrive.live.com/embed?resid=2A3A8CDEE718E8C2%2115203&authkey=%21AEUDpZYPxhkEiZ8&em=2&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>'
     return HttpResponse(embed_str)

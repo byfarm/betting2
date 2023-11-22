@@ -97,29 +97,31 @@ def combine_data(sport, **kwargs):
         "LA Rams": "Angeles LAR",
         "Los Angeles Chargers": "Angeles LAC",
         "LA Charger": "Angeles LAC",
-        "NY Jets": "NYJ Jets",
-        "New York Jets": "NYJ Jets",
-        "NY Giants": "NYG Giants",
-        "New York Giants": "NYG Giants",
+        "NY Jets": "NYJ Jets York",
+        "New York Jets": "NYJ Jets York",
+        "NY Giants": "NYG Giants York",
+        "New York Giants": "NYG Giants York",
         "LA Clippers": "LAC Clippers",
         "Los Angeles Clippers": "LAC Clippers",
         "LA Lakers": "LAL Lakers",
         "Los Anngeles Lakers": "LAL Lakers",
     }
-    # debug(kwargs)
     big_dict = {}
     for key, value in kwargs.items():
         for val in value:
             if val.matchup.name in name_change.keys():
                 val.matchup.name = name_change[val.matchup.name]
+                # print(val.matchup.name)
             if val.name in name_change.keys():
                 val.name = name_change[val.name]
+                # print(val.name)
             # get the name stored in the database
             name = check_single_name(val.name, name_indexes[sport])
-            # opp_name = check_single_name(val.matchup.name, name_indexes[sport])
+            opp_name = check_single_name(val.matchup.name, name_indexes[sport])
 
             # if the matchup not in, skip
-            if not name:
+            if not name or not opp_name:
+                # if name or opp_name:
                 # print(name, opp_name)
                 # print(val.name, val.matchup.name)
                 continue
@@ -133,6 +135,7 @@ def combine_data(sport, **kwargs):
                 big_dict[name]["opponent"] = val.matchup.name
 
     # fileter out non-matching names
+    # debug(big_dict)
     bad_ones = set()
     for name, values in big_dict.items():
         if len(values.values()) - 1 < len(kwargs.keys()):
@@ -153,4 +156,4 @@ class Betline:
         self.odds: dict = odds
 
     def __repr__(self):
-        return f"{self.name}: {self.odds}"
+        return f"{self.name}: {self.odds}:::{self.matchup.name}"
