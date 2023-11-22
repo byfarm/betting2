@@ -64,9 +64,11 @@ def write_to_csv(big_dict: dict, filepath: str):
     # write green_background for best bets for each player
     max_df = df[col_list[1:-3]]
     for idx, row in max_df.iterrows():
-        row_min = row.max()
-        col_index = list(row).index(row_min)
-        worksheet.write(1 + idx, 1 + col_index, row_min, green_background)
+        row_max = row.max()
+        col_indexes = [i for i, l in enumerate(row) if l == row_max]
+
+        for col_idx in col_indexes:
+            worksheet.write(1 + idx, 1 + col_idx, row_max, green_background)
 
         # write in boarders between matchups
         if idx % 2 == 0:
