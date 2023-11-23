@@ -20,6 +20,7 @@ def expected_value(probability: float, true_probability: float):
     return ev * 100
 
 
+@jit(nopython=True)
 def novig(odd1: int, odd2: int):
     """Calculates the no vig odds from pinnacle"""
     odd1 = american_to_percentage(odd1)
@@ -29,6 +30,7 @@ def novig(odd1: int, odd2: int):
     return novig1, novig2
 
 
+@jit(nopython=True)
 def spread(odd1: int, odd2: int):
     if odd1 < 0 and odd2 < 0:
         r = -round(odd1, -2)

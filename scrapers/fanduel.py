@@ -41,25 +41,33 @@ async def fanduel_request(url: str = None):
     return data
 
 
+def next_weekday(d, weekday):
+    """0=Mon, 1=Tue etc"""
+    days_ahead = weekday - d.weekday()
+    if days_ahead <= 0:  # Target day already happened this week
+        days_ahead += 7
+    return d + datetime.timedelta(days_ahead)
+
+
 def parse_fanduel(data: dict):
     markets = data.get("attachments", {}).get("markets", {})
 
     currtime = (
         datetime.datetime.now(datetime.timezone.utc)
         .replace(tzinfo=None)
-        + datetime.timedelta(days=6)
     )
-
-    tzcheck = False
-    if "nfl" in (
-        list(markets.values())[0].get("runners", [])[0].get("logo", "")
-    ):
-        tzcheck = True
+    currtime = next_weekday(currtime, 1)
 
     all_matchups = []
     for market in markets.values():
         if market.get("marketName", "") != "Moneyline":
             continue
+
+        tzcheck = False
+        if "nfl" in (
+            market.get("runners", [])[0].get("logo", "")
+        ):
+            tzcheck = True
 
         dt = datetime.datetime.strptime(
             market.get("marketTime"), "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -70,8 +78,8 @@ def parse_fanduel(data: dict):
         pair = []
         for runner in market.get("runners", []):
             name = runner.get("runnerName", "")
-            if name in [x.name for x in all_matchups]:
-                break
+            # if name in [x.name for x in all_matchups]:
+            #     break
             odds: int = (
                 runner.get("winRunnerOdds", {})
                 .get("americanDisplayOdds")
@@ -92,7 +100,6 @@ def parse_fanduel(data: dict):
 async def scrape_fanduel(url: str = None):
     data = await fanduel_request(url)
     all_matchups = parse_fanduel(data)
-    # debug(all_matchups)
     return all_matchups
 
 

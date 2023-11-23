@@ -131,6 +131,7 @@ def combine_data(sport, **kwargs):
                 continue
 
             name = name.title()
+            opp_name = opp_name.title()
             if not big_dict.get(name, None):
                 big_dict[name] = {}
 
@@ -139,7 +140,6 @@ def combine_data(sport, **kwargs):
                 big_dict[name]["opponent"] = opp_name
 
     # fileter out non-matching names
-    # debug(big_dict)
     bad_ones = set()
     for name, values in big_dict.items():
         if len(values.values()) - 1 < len(kwargs.keys()):
