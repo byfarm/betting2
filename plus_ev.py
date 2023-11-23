@@ -20,10 +20,34 @@ def expected_value(probability: float, true_probability: float):
     return ev * 100
 
 
+def novig(odd1: int, odd2: int):
+    """Calculates the no vig odds from pinnacle"""
+    odd1 = american_to_percentage(odd1)
+    odd2 = american_to_percentage(odd2)
+    novig1 = odd1/(odd1 + odd2)
+    novig2 = odd2/(odd1 + odd2)
+    return novig1, novig2
+
+
 def calc_evs(big_dict: dict):
     """
     Calculates the best ev from the sportsbooks
     """
+    debug(big_dict)
+    found = set()
+    for k, v in big_dict.items():
+
+        if k in found:
+            continue
+        no1, no2 = novig(
+            big_dict[k]["Pinnacle"],
+            big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
+        )
+        big_dict[k]["Pinnacle"] = decimal_to_american(1/no1)
+        big_dict[big_dict[k]["opponent"].title()]["Pinnacle"] = decimal_to_american(1/no2)
+        found.add(k)
+        found.add(big_dict[k]["opponent"])
+
     for name, books in big_dict.items():
         ev_names: list = []
         evs: list = []
@@ -64,6 +88,6 @@ def kelly(given_percent: float, true_percent: float):
 
 
 if __name__ == "__main__":
-    true_percentage = 0.2
-    juiced = 0.25
-    print(kelly(juiced, true_percentage))
+    odd1 = +324
+    odd2 = -395
+    print(novig(odd1, odd2))

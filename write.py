@@ -134,7 +134,7 @@ def combine_data(sport, **kwargs):
 
             if key not in big_dict[name].keys():
                 big_dict[name][key] = val.odds
-                big_dict[name]["opponent"] = val.matchup.name
+                big_dict[name]["opponent"] = opp_name
 
     # fileter out non-matching names
     # debug(big_dict)
