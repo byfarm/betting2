@@ -24,6 +24,8 @@ def write_to_csv(big_dict: dict, filepath: str):
     col_list.insert(-1, "Pinnacle")
     col_list.remove("Kelly")
     col_list.append("Kelly")
+    col_list.remove("Spread")
+    col_list.append("Spread")
     df = df[col_list]
 
     writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
@@ -47,13 +49,13 @@ def write_to_csv(big_dict: dict, filepath: str):
     )
     # Set the conditional format range.
     start_row = 1
-    start_col = len(df.columns) - 2
+    start_col = len(df.columns) - 3
     end_row = len(df)
     end_col = start_col
 
     # Apply a red background format to the cell range.
     worksheet.conditional_format(
-        start_row, start_col, end_row, end_col+1, {
+        start_row, start_col, end_row, end_col + 1, {
             'type': 'cell',
             'criteria': '>',
             'value': 0.0,
@@ -62,7 +64,7 @@ def write_to_csv(big_dict: dict, filepath: str):
     )
 
     # write green_background for best bets for each player
-    max_df = df[col_list[1:-3]]
+    max_df = df[col_list[1:-4]]
     for idx, row in max_df.iterrows():
         row_max = row.max()
         col_indexes = [i for i, l in enumerate(row) if l == row_max]

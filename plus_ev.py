@@ -29,31 +29,46 @@ def novig(odd1: int, odd2: int):
     return novig1, novig2
 
 
+def spread(odd1: int, odd2: int):
+    if odd1 < 0 and odd2 < 0:
+        r = -round(odd1, -2)
+        return abs(r+odd1 + r+odd2)
+    else:
+        return abs(odd1 + odd2)
+
+
 def calc_evs(big_dict: dict):
     """
     Calculates the best ev from the sportsbooks
     """
-    debug(big_dict)
     found = set()
     for k, v in big_dict.items():
 
-        if k in found:
-            continue
-        no1, no2 = novig(
-            big_dict[k]["Pinnacle"],
-            big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
-        )
-        big_dict[k]["Pinnacle"] = decimal_to_american(1/no1)
-        big_dict[big_dict[k]["opponent"].title()]["Pinnacle"] = decimal_to_american(1/no2)
-        found.add(k)
-        found.add(big_dict[k]["opponent"])
+        if k not in found:
+            sp = spread(
+                big_dict[k]["Pinnacle"],
+                big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
+            )
+            if sp != 0:
+                big_dict[k]["Spread"] = sp
+                big_dict[big_dict[k]["opponent"].title()]["Spread"] = sp
+
+            no1, no2 = novig(
+                big_dict[k]["Pinnacle"],
+                big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
+            )
+
+            big_dict[k]["Pinnacle"] = decimal_to_american(1/no1)
+            big_dict[big_dict[k]["opponent"].title()]["Pinnacle"] = decimal_to_american(1/no2)
+            found.add(k)
+            found.add(big_dict[k]["opponent"])
 
     for name, books in big_dict.items():
         ev_names: list = []
         evs: list = []
         kellies: list = []
         for book in books:
-            if book == "opponent" or book == "Pinnacle":
+            if book == "opponent" or book == "Pinnacle" or book == "Spread":
                 continue
             ev: float = expected_value(
                 american_to_percentage(books[book]),
@@ -88,6 +103,6 @@ def kelly(given_percent: float, true_percent: float):
 
 
 if __name__ == "__main__":
-    odd1 = +324
-    odd2 = -395
-    print(novig(odd1, odd2))
+    odd1 = -110
+    odd2 = -110
+    print(spread(odd1, odd2))
