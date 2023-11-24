@@ -11,7 +11,7 @@ def expected_value(probability: float, true_probability: float):
     """
     calculates the expected value of a bet
     """
-    amercian_prob = decimal_to_american(1/probability)
+    amercian_prob = decimal_to_american(1 / probability)
     if amercian_prob < 0:
         payout = (100 / -amercian_prob)
     else:
@@ -20,17 +20,80 @@ def expected_value(probability: float, true_probability: float):
     return ev * 100
 
 
+@jit(nopython=True)
+def novig(odd1: int, odd2: int):
+    """Calculates the no vig odds from pinnacle"""
+    odd1 = american_to_percentage(odd1)
+    odd2 = american_to_percentage(odd2)
+    novig1 = odd1/(odd1 + odd2)
+    novig2 = odd2/(odd1 + odd2)
+    return novig1, novig2
+
+
+@jit(nopython=True)
+def spread(odd1: int, odd2: int):
+    if odd1 < 0 and odd2 < 0:
+        r = -round(odd1, -2)
+        return abs(r+odd1 + r+odd2)
+    else:
+        return abs(odd1 + odd2)
+
+
 def calc_evs(big_dict: dict):
     """
-    Calculates the best ev from the sportsbooks
+    Calculates the best ev from the sportsbooks modifies the dict
     """
+    found = set()
+    for k, v in big_dict.items():
+
+        if k not in found:
+            sp = spread(
+                big_dict[k]["Pinnacle"],
+                big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
+            )
+            if sp != 0:
+                big_dict[k]["Spread"] = sp
+                big_dict[big_dict[k]["opponent"].title()]["Spread"] = sp
+
+            no1, no2 = novig(
+                big_dict[k]["Pinnacle"],
+                big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
+            )
+
+            found.add(k)
+            found.add(big_dict[k]["opponent"])
+
+            # # avg no vig from all sportsbooks
+            big_dict[k]["AVG"] = 0
+            big_dict[big_dict[k]["opponent"].title()]["AVG"] = 0
+
+            for b in v:
+                if b == "opponent" or b == "AVG" or b == "Spread":
+                    continue
+                no1, no2 = novig(
+                    big_dict[k][b],
+                    big_dict[big_dict[k]["opponent"].title()][b]
+                )
+
+                big_dict[k]["AVG"] += decimal_to_american(1/no1)
+                big_dict[big_dict[k]["opponent"].title()]["AVG"] +=\
+                    decimal_to_american(1/no2)
+
+            big_dict[k]["Pinnacle"] = decimal_to_american(1/no1)
+            big_dict[big_dict[k]["opponent"].title()]["Pinnacle"] =\
+                decimal_to_american(1/no2)
+
     for name, books in big_dict.items():
         ev_names: list = []
         evs: list = []
         kellies: list = []
         for book in books:
-            if book == "opponent" or book == "Pinnacle":
+            if book == "opponent" or book == "Pinnacle" or book == "Spread":
                 continue
+            elif book == "AVG":
+                big_dict[name][book] = int(big_dict[name][book]/(len(books)-3))
+                continue
+
             ev: float = expected_value(
                 american_to_percentage(books[book]),
                 american_to_percentage(big_dict[name]["Pinnacle"])
@@ -64,6 +127,6 @@ def kelly(given_percent: float, true_percent: float):
 
 
 if __name__ == "__main__":
-    true_percentage = 0.2
-    juiced = 0.25
-    print(kelly(juiced, true_percentage))
+    odd1 = -110
+    odd2 = -110
+    print(spread(odd1, odd2))
