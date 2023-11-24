@@ -6,3 +6,7 @@ The scrapers use python's asycio module to quickly run the scrapes so when the w
 Notable Python modules used in this project is httpx to make the async requests, and pandas to print and format the excel file. 
 
 Profitable betts are calculated by taking a shart sportsbook (in this case Pinnacle Sportsbook) and finding the no-vig odds from that sportsbook. The odds from other sportsbooks are then compared against these odds to determine if thier bets are statistically profitable. Other usefull data is displayed along with the results including the kelly number (what percent of your bankroll you should place into one bet), the expected value of the bet, the average no-vig odds from all the sportsbooks, and the spread on the event given by Pinnacle Sportsbook.
+
+The largest challenge from this project is being able to correctly match the names of teams/players across sportsbooks. This is the reason why so few leagues are included as this becomes complicated when comparing teams with similair names (Ex: Texas vs Texas Tech ...).
+
+If you have any questions or suggestions, please feel free to comment!
