@@ -64,7 +64,7 @@ def write_to_csv(big_dict: dict, filepath: str):
     )
 
     # write green_background for best bets for each player
-    max_df = df[col_list[1:-4]]
+    max_df = df[col_list[1:-5]]
     for idx, row in max_df.iterrows():
         row_max = row.max()
         col_indexes = [i for i, l in enumerate(row) if l == row_max]

@@ -11,7 +11,7 @@ def expected_value(probability: float, true_probability: float):
     """
     calculates the expected value of a bet
     """
-    amercian_prob = decimal_to_american(1/probability)
+    amercian_prob = decimal_to_american(1 / probability)
     if amercian_prob < 0:
         payout = (100 / -amercian_prob)
     else:
@@ -41,7 +41,7 @@ def spread(odd1: int, odd2: int):
 
 def calc_evs(big_dict: dict):
     """
-    Calculates the best ev from the sportsbooks
+    Calculates the best ev from the sportsbooks modifies the dict
     """
     found = set()
     for k, v in big_dict.items():
@@ -60,10 +60,28 @@ def calc_evs(big_dict: dict):
                 big_dict[big_dict[k]["opponent"].title()]["Pinnacle"]
             )
 
-            big_dict[k]["Pinnacle"] = decimal_to_american(1/no1)
-            big_dict[big_dict[k]["opponent"].title()]["Pinnacle"] = decimal_to_american(1/no2)
             found.add(k)
             found.add(big_dict[k]["opponent"])
+
+            # # avg no vig from all sportsbooks
+            big_dict[k]["AVG"] = 0
+            big_dict[big_dict[k]["opponent"].title()]["AVG"] = 0
+
+            for b in v:
+                if b == "opponent" or b == "AVG" or b == "Spread":
+                    continue
+                no1, no2 = novig(
+                    big_dict[k][b],
+                    big_dict[big_dict[k]["opponent"].title()][b]
+                )
+
+                big_dict[k]["AVG"] += decimal_to_american(1/no1)
+                big_dict[big_dict[k]["opponent"].title()]["AVG"] +=\
+                    decimal_to_american(1/no2)
+
+            big_dict[k]["Pinnacle"] = decimal_to_american(1/no1)
+            big_dict[big_dict[k]["opponent"].title()]["Pinnacle"] =\
+                decimal_to_american(1/no2)
 
     for name, books in big_dict.items():
         ev_names: list = []
@@ -72,6 +90,10 @@ def calc_evs(big_dict: dict):
         for book in books:
             if book == "opponent" or book == "Pinnacle" or book == "Spread":
                 continue
+            elif book == "AVG":
+                big_dict[name][book] = int(big_dict[name][book]/(len(books)-3))
+                continue
+
             ev: float = expected_value(
                 american_to_percentage(books[book]),
                 american_to_percentage(big_dict[name]["Pinnacle"])
