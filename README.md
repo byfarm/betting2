@@ -9,4 +9,6 @@ Profitable betts are calculated by taking a shart sportsbook (in this case Pinna
 
 The largest challenge from this project is being able to correctly match the names of teams/players across sportsbooks. This is the reason why so few leagues are included as this becomes complicated when comparing teams with similair names (Ex: Texas vs Texas Tech ...).
 
+Example outputs can be found in the .xlsx files in the code.
+
 If you have any questions or suggestions, please feel free to comment!
