@@ -108,7 +108,7 @@ def combine_data(sport, **kwargs):
         "LA Clippers": "LAC Clippers",
         "Los Angeles Clippers": "LAC Clippers",
         "LA Lakers": "LAL Lakers",
-        "Los Anngeles Lakers": "LAL Lakers",
+        "Los Angeles Lakers": "LAL Lakers",
     }
     big_dict = {}
     for key, value in kwargs.items():
